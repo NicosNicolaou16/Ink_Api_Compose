@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.ink.nativeloader)
     implementation(libs.ink.rendering)
     implementation(libs.ink.strokes)
+    //Motion Prediction
     implementation(libs.androidx.input.motionprediction)
     //Unit Test
     testImplementation(libs.junit)
