@@ -6,13 +6,13 @@ plugins {
 
 android {
     namespace = "com.nicos.ink_api_compose"
-    buildToolsVersion = "34.0.0"
-    compileSdk = 34
+    buildToolsVersion = "35.0.0"
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.nicos.ink_api_compose"
-        minSdk = 27
-        targetSdk = 34
+        minSdk = 28
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -52,6 +52,13 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    //Ink API
+    implementation(libs.ink.authoriring)
+    implementation(libs.ink.brush)
+    implementation(libs.ink.geometry)
+    implementation(libs.ink.nativeloader)
+    implementation(libs.ink.rendering)
+    implementation(libs.ink.strokes)
     //Unit Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
