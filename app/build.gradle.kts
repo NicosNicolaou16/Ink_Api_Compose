@@ -6,6 +6,7 @@ plugins {
 
 android {
     namespace = "com.nicos.ink_api_compose"
+    buildToolsVersion = "34.0.0"
     compileSdk = 34
 
     defaultConfig {
@@ -37,19 +38,21 @@ android {
     buildFeatures {
         compose = true
     }
-    buildToolsVersion = "34.0.0"
 }
 
 dependencies {
 
+    //Architecture
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    //Compose
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    //Unit Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
