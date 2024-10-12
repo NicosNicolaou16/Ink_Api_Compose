@@ -1,5 +1,5 @@
 # Ink API Compose
-
+This open source project is testing the new Google Ink API with an example for drawer with options to select colors and erase the drawing.
 
 # Versioning
 Target SDK version: 34 <br />
