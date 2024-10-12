@@ -26,13 +26,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -121,6 +124,7 @@ fun DrawingSurface(
     finishedStrokesState: MutableState<Set<Stroke>>,
     eraseDrawer: () -> Unit,
 ) {
+    val selectedColor = remember { mutableIntStateOf(Color.Red.toArgb()) }
     val canvasStrokeRenderer = CanvasStrokeRenderer.create()
     val currentPointerId = remember { mutableStateOf<Int?>(null) }
     val currentStrokeId = remember { mutableStateOf<InProgressStrokeId?>(null) }
@@ -233,26 +237,41 @@ fun DrawingSurface(
         }
         Row(
             modifier = Modifier
-                .height(height = 100.dp)
+                .height(height = 150.dp)
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth(fraction = 0.7f)
                 .safeDrawingPadding(),
             horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
         ) {
-            EraseDrawer(eraseDrawer = eraseDrawer)
-            SelectedColor(color = Red) {
+            EraseDrawer(
+                eraseDrawer = eraseDrawer
+            )
+            SelectedColor(
+                selectedColor = selectedColor,
+                color = Red
+            ) {
                 defaultBrush =
-                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color(Color.Red.toArgb()).toArgb())
+                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color.Red.toArgb())
             }
-            SelectedColor(color = Blue) {
+            SelectedColor(
+                selectedColor = selectedColor,
+                color = Blue
+            ) {
                 defaultBrush =
-                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color(Color.Blue.toArgb()).toArgb())
+                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color.Blue.toArgb())
             }
-            SelectedColor(color = Pink) {
+            SelectedColor(
+                selectedColor = selectedColor,
+                color = Pink
+            ) {
                 defaultBrush =
                     defaultBrush.copyWithColorIntArgb(colorIntArgb = Color(Pink.value).toArgb())
             }
-            SelectedColor(color = Green) {
+            SelectedColor(
+                selectedColor = selectedColor,
+                color = Green
+            ) {
                 defaultBrush =
                     defaultBrush.copyWithColorIntArgb(colorIntArgb = Color.Green.toArgb())
             }
@@ -274,16 +293,23 @@ private fun EraseDrawer(eraseDrawer: () -> Unit) {
     }
 }
 
+@SuppressLint("RestrictedApi")
 @Composable
 private fun SelectedColor(
+    selectedColor: MutableIntState,
     color: androidx.compose.ui.graphics.Color,
     selectingColor: () -> Unit
 ) {
+
     Box(
         modifier = Modifier
-            .size(height = 70.dp, width = 50.dp)
+            .size(
+                height = if (selectedColor.intValue == color.toArgb()) 100.dp else 70.dp,
+                width = 50.dp
+            )
             .background(color = color)
             .clickable {
+                selectedColor.intValue = color.toArgb()
                 selectingColor()
             })
 }
