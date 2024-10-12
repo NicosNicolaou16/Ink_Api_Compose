@@ -1,6 +1,13 @@
 # Ink API Compose
 This open source project is testing the new Google Ink API with an example for drawer with options to select colors and erase the drawing.
 
+# Examples
+<p align="left">
+  <a title="simulator_image"><img src="examples/Screenshot_20241013_010019.png" height="500" width="200"></a>
+  <a title="simulator_image"><img src="examples/Screenshot_20241013_010101.png" height="500" width="200"></a>
+  <a title="simulator_image"><img src="examples/example_gif.gif" height="500" width="200"></a>
+</p>
+
 # Versioning
 Target SDK version: 35 <br />
 Minimum SDK version: 28 <br />
