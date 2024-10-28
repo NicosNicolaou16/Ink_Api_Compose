@@ -12,7 +12,7 @@ This open source project is testing the new Google Ink API with an example for d
 Target SDK version: 35 <br />
 Minimum SDK version: 28 <br />
 Kotlin version: 2.0.21 <br />
-Gradle version: 8.7.0 <br />
+Gradle version: 8.7.1 <br />
 
 # References
 https://android-developers.googleblog.com/2024/10/introducing-ink-api-jetpack-library.html <br />
