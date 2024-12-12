@@ -3,6 +3,14 @@
 This open-source project tests the new Google Ink API with an example for drawing, offering options
 to select colors and erase the drawing.
 
+# Examples
+
+<p align="left">
+  <a title="simulator_image"><img src="examples/Screenshot_20241013_010019.png" height="500" width="200"></a>
+  <a title="simulator_image"><img src="examples/Screenshot_20241013_010101.png" height="500" width="200"></a>
+  <a title="simulator_image"><img src="examples/example_gif.gif" height="500" width="200"></a>
+</p>
+
 # Small History Behind this Repository
 
 I began this project to test the new Google Ink API, and while I was working on it, my son saw it
@@ -15,14 +23,6 @@ I installed the app on their tablet, and they started drawing right away.
 - Color Selection: Allows users to choose from a variety of colors for drawing.
 - Erase Tool: Provides an option to erase parts of the drawing.
 - Tablet Compatibility: Works seamlessly on tablets for an enhanced drawing experience.
-
-# Examples
-
-<p align="left">
-  <a title="simulator_image"><img src="examples/Screenshot_20241013_010019.png" height="500" width="200"></a>
-  <a title="simulator_image"><img src="examples/Screenshot_20241013_010101.png" height="500" width="200"></a>
-  <a title="simulator_image"><img src="examples/example_gif.gif" height="500" width="200"></a>
-</p>
 
 # Versioning
 
