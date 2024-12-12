@@ -21,7 +21,7 @@ I installed the app on their tablet, and they started drawing right away.
 # Here’s a list of features you could highlight for the app:
 
 - Color Selection: Allows users to choose from a variety of colors for drawing.
-- Erase Tool: Provides an option to erase parts of the drawing.
+- Erase Tool: Provides the option to erase any part of the drawing.
 - Tablet Compatibility: Works seamlessly on tablets for an enhanced drawing experience.
 
 # Versioning
