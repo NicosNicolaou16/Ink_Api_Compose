@@ -1,6 +1,6 @@
 # Ink API Compose
 
-This open source project is testing the new Google Ink API with an example for drawer with options
+This open-source project tests the new Google Ink API with an example for drawing, offering options
 to select colors and erase the drawing.
 
 # Small History Behind this Repository
