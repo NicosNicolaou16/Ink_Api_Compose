@@ -18,7 +18,7 @@ and asked if he could draw. I told him to wait, then quickly implemented a simpl
 options to select colors and erase the drawing. After generating the APKs (my daughter also saw it),
 I installed the app on their tablet, and they started drawing right away.
 
-# Here’s a list of features you could highlight for the app:
+# Here’s a list of features to highlight for the app
 
 - Color Selection: Allows users to choose from a variety of colors for drawing.
 - Erase Tool: Provides the option to erase any part of the drawing.
