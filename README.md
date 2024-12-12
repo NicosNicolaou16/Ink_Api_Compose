@@ -11,7 +11,7 @@ to select colors and erase the drawing.
   <a title="simulator_image"><img src="examples/example_gif.gif" height="500" width="200"></a>
 </p>
 
-## A Brief History Behind This Repository :smile:
+## A Brief History Behind This Repository :smiley:
 
 I began this project to test the new Google Ink API, and while I was working on it, my son saw it
 and asked if he could draw. I told him to wait, then quickly implemented a simple version with
