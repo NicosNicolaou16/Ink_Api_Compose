@@ -14,7 +14,7 @@ Minimum SDK version: 28 <br />
 Kotlin version: 2.0.21 <br />
 Gradle version: 8.7.1 <br />
 
-# References
+# References - Useful Links
 https://android-developers.googleblog.com/2024/10/introducing-ink-api-jetpack-library.html <br />
 https://developer.android.com/develop/ui/compose/touch-input/stylus-input/about-ink-api <br />
 https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-modules <br />
