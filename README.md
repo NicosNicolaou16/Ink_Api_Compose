@@ -26,6 +26,7 @@ I installed the app on their tablet, and they started drawing right away.
 
 ## Versioning
 
+Ink Api version: 1.0.0-alpha02
 Target SDK version: 35 <br />
 Minimum SDK version: 28 <br />
 Kotlin version: 2.1.0 <br />
