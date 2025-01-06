@@ -20,6 +20,8 @@
 # hide the original source file name.
 -renamesourcefileattribute SourceFile
 
+# Ink Api Proguard Rules
+
 # Keep the attributes that contain annotations.
 -keepattributes RuntimeVisible*Annotation*
 
@@ -43,3 +45,5 @@
 -keepclassmembers class * {
     @androidx.ink.nativeloader.UsedByNative *;
 }
+
+# End Ink Api Proguard Rules
