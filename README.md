@@ -26,11 +26,11 @@ I installed the app on their tablet, and they started drawing right away.
 
 ## Versioning
 
-Ink Api version: 1.0.0-alpha02
+Ink Api version: 1.0.0-alpha03 <br />
 Target SDK version: 35 <br />
 Minimum SDK version: 28 <br />
-Kotlin version: 2.1.0 <br />
-Gradle version: 8.7.3 <br />
+Kotlin version: 2.1.10 <br />
+Gradle version: 8.8.1 <br />
 
 ## References - Useful Links
 
