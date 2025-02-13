@@ -6,9 +6,9 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
-activityCompose = "1.9.3"
-composeBom = "2024.12.01"
-inkVersion = "1.0.0-alpha02"
+activityCompose = "1.10.0"
+composeBom = "2025.02.00"
+inkVersion = "1.0.0-alpha03"
 inputMotionprediction = "1.0.0-beta05"
 
 [libraries]
