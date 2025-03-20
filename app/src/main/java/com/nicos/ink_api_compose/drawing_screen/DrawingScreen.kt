@@ -58,6 +58,7 @@ fun DrawingSurface(
     eraseDrawer: () -> Unit,
 ) {
     val selectedColor = remember { mutableIntStateOf(Color.Red.toArgb()) }
+    var inProgressStrokesView by remember { mutableStateOf<InProgressStrokesView?>(null) }
     val canvasStrokeRenderer = CanvasStrokeRenderer.create()
     val currentPointerId = remember { mutableStateOf<Int?>(null) }
     val currentStrokeId = remember { mutableStateOf<InProgressStrokeId?>(null) }
@@ -67,7 +68,6 @@ fun DrawingSurface(
         size = 15F,
         epsilon = 0.1F
     )
-    var inProgressStrokesView by remember { mutableStateOf<InProgressStrokesView?>(null) }
     Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(
             modifier = Modifier.fillMaxSize(),
