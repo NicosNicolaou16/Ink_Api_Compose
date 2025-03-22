@@ -28,9 +28,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,14 +59,11 @@ import com.nicos.ink_api_compose.ui.theme.Ink_Api_ComposeTheme
 import com.nicos.ink_api_compose.ui.theme.Pink
 import com.nicos.ink_api_compose.ui.theme.Red
 
-class MainActivity : ComponentActivity(), InProgressStrokesFinishedListener {
-    private lateinit var inProgressStrokesView: InProgressStrokesView
+class MainActivity : ComponentActivity() {
     private val finishedStrokesState = mutableStateOf(emptySet<Stroke>())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        inProgressStrokesView = InProgressStrokesView(this)
-        inProgressStrokesView.addFinishedStrokesListener(this)
         enableEdgeToEdge()
         setContent {
             Ink_Api_ComposeTheme {
@@ -76,7 +75,6 @@ class MainActivity : ComponentActivity(), InProgressStrokesFinishedListener {
                     )
                     DrawingSurface(
                         innerPadding = innerPadding,
-                        inProgressStrokesView = inProgressStrokesView,
                         finishedStrokesState = finishedStrokesState,
                         eraseDrawer = {
                             eraseWholeStrokes(
@@ -88,12 +86,6 @@ class MainActivity : ComponentActivity(), InProgressStrokesFinishedListener {
                 }
             }
         }
-    }
-
-    @UiThread
-    override fun onStrokesFinished(strokes: Map<InProgressStrokeId, Stroke>) {
-        finishedStrokesState.value += strokes.values
-        inProgressStrokesView.removeFinishedStrokes(strokes.keys)
     }
 
     private fun eraseWholeStrokes(
@@ -120,10 +112,10 @@ class MainActivity : ComponentActivity(), InProgressStrokesFinishedListener {
 @Composable
 fun DrawingSurface(
     innerPadding: PaddingValues,
-    inProgressStrokesView: InProgressStrokesView,
     finishedStrokesState: MutableState<Set<Stroke>>,
     eraseDrawer: () -> Unit,
 ) {
+    var inProgressStrokesView by remember { mutableStateOf<InProgressStrokesView?>(null) }
     val selectedColor = remember { mutableIntStateOf(Color.Red.toArgb()) }
     val canvasStrokeRenderer = CanvasStrokeRenderer.create()
     val currentPointerId = remember { mutableStateOf<Int?>(null) }
@@ -140,12 +132,19 @@ fun DrawingSurface(
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
                 val rootView = FrameLayout(context)
-                inProgressStrokesView.apply {
-                    layoutParams =
-                        FrameLayout.LayoutParams(
-                            FrameLayout.LayoutParams.MATCH_PARENT,
-                            FrameLayout.LayoutParams.MATCH_PARENT,
-                        )
+                InProgressStrokesView(context).apply {
+                    eagerInit()
+                    addFinishedStrokesListener(
+                        object : InProgressStrokesFinishedListener {
+                            override fun onStrokesFinished(strokes: Map<InProgressStrokeId, Stroke>) {
+                                finishedStrokesState.value += strokes.values
+                                inProgressStrokesView?.removeFinishedStrokes(strokes.keys)
+                                // Caller must recompose from callback strokes, cannot wait until a later frame.
+                                removeFinishedStrokes(strokes.keys)
+                            }
+                        }
+                    )
+                    inProgressStrokesView = this
                 }
                 val predictor = MotionEventPredictor.newInstance(rootView)
                 val touchListener =
@@ -162,7 +161,7 @@ fun DrawingSurface(
                                     val pointerId = event.getPointerId(pointerIndex)
                                     currentPointerId.value = pointerId
                                     currentStrokeId.value =
-                                        inProgressStrokesView.startStroke(
+                                        inProgressStrokesView?.startStroke(
                                             event = event,
                                             pointerId = pointerId,
                                             brush = defaultBrush
@@ -176,7 +175,7 @@ fun DrawingSurface(
 
                                     for (pointerIndex in 0 until event.pointerCount) {
                                         if (event.getPointerId(pointerIndex) != pointerId) continue
-                                        inProgressStrokesView.addToStroke(
+                                        inProgressStrokesView?.addToStroke(
                                             event,
                                             pointerId,
                                             strokeId,
@@ -191,7 +190,7 @@ fun DrawingSurface(
                                     val pointerId = event.getPointerId(pointerIndex)
                                     check(pointerId == currentPointerId.value)
                                     val currentStrokeId = checkNotNull(currentStrokeId.value)
-                                    inProgressStrokesView.finishStroke(
+                                    inProgressStrokesView?.finishStroke(
                                         event,
                                         pointerId,
                                         currentStrokeId
@@ -206,7 +205,7 @@ fun DrawingSurface(
                                     check(pointerId == currentPointerId.value)
 
                                     val currentStrokeId = checkNotNull(currentStrokeId.value)
-                                    inProgressStrokesView.cancelStroke(currentStrokeId, event)
+                                    inProgressStrokesView?.cancelStroke(currentStrokeId, event)
                                     true
                                 }
 
