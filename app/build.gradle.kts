@@ -52,6 +52,8 @@ dependencies {
     //Architecture
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    // Graphic Core
+    implementation(libs.androidx.graphics.core)
     //Compose
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
