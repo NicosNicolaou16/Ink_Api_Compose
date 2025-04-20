@@ -269,7 +269,7 @@ fun ShowBitmapDialog(bitmap: Bitmap?, showDialog: Boolean, onDismissRequest: () 
         AlertDialog(
             onDismissRequest = onDismissRequest,
             title = {
-                Text(text = "Image Preview") // Optional title
+                Text(text = "Bitmap from Stroke")
             },
             text = {
                 Image(
