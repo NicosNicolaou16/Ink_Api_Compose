@@ -219,15 +219,17 @@ fun DrawingSurface(
                 CreateBitmapFromStrokeButton(
                     bitmap = {
                         scope.launch {
-                            recordCanvasToBitmap(
-                                strokes = finishedStrokesState.value.toList(),
-                                canvasStrokeRenderer = canvasStrokeRenderer,
-                                canvasTransform = Matrix(),
-                                onBitmap = {
-                                    bitmapRe = it
-                                    showDialog = true
-                                }
-                            )
+                            if (finishedStrokesState.value.isNotEmpty()) {
+                                recordCanvasToBitmap(
+                                    strokes = finishedStrokesState.value.toList(),
+                                    canvasStrokeRenderer = canvasStrokeRenderer,
+                                    canvasTransform = Matrix(),
+                                    onBitmap = {
+                                        bitmapRe = it
+                                        showDialog = true
+                                    }
+                                )
+                            }
                         }
                     })
             }
