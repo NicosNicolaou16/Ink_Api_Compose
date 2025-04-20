@@ -1,15 +1,19 @@
 package com.nicos.ink_api_compose.drawing_screen
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.graphics.Picture
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,8 +21,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
@@ -26,9 +32,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
@@ -49,7 +57,11 @@ import com.nicos.ink_api_compose.ui.theme.Blue
 import com.nicos.ink_api_compose.ui.theme.Green
 import com.nicos.ink_api_compose.ui.theme.Pink
 import com.nicos.ink_api_compose.ui.theme.Red
+import kotlinx.coroutines.Dispatchers
 import kotlin.collections.plus
+import androidx.core.graphics.createBitmap
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @SuppressLint("ClickableViewAccessibility", "RestrictedApi")
 @Composable
@@ -58,6 +70,13 @@ fun DrawingSurface(
     finishedStrokesState: MutableState<Set<Stroke>>,
     eraseDrawer: () -> Unit,
 ) {
+    var bitmapRe by remember {
+        mutableStateOf(
+            createBitmap(1, 1)
+        )
+    }
+    val scope = rememberCoroutineScope()
+    var showDialog by remember { mutableStateOf(false) }
     var inProgressStrokesView by remember { mutableStateOf<InProgressStrokesView?>(null) }
     val selectedColor = remember { mutableIntStateOf(Color.Red.toArgb()) }
     val canvasStrokeRenderer = CanvasStrokeRenderer.create()
@@ -69,6 +88,11 @@ fun DrawingSurface(
         size = 15F,
         epsilon = 0.1F
     )
+
+    ShowBitmapDialog(
+        bitmap = bitmapRe,
+        showDialog = showDialog,
+        onDismissRequest = { showDialog = false })
 
     Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(
@@ -164,6 +188,7 @@ fun DrawingSurface(
                 rootView
             },
         )
+
         Canvas(modifier = Modifier) {
             val canvasTransform = Matrix()
             drawContext.canvas.nativeCanvas.concat(canvasTransform)
@@ -177,18 +202,37 @@ fun DrawingSurface(
                 )
             }
         }
+
         Row(
             modifier = Modifier
-                .height(height = 150.dp)
+                .height(height = 200.dp)
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth(fraction = 0.7f)
                 .safeDrawingPadding(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
-            EraseDrawer(
-                eraseDrawer = eraseDrawer
-            )
+            Column {
+                EraseDrawerButton(
+                    eraseDrawer = eraseDrawer
+                )
+                CreateBitmapFromStrokeButton(
+                    bitmap = {
+                        scope.launch {
+                            if (finishedStrokesState.value.isNotEmpty()) {
+                                recordCanvasToBitmap(
+                                    strokes = finishedStrokesState.value.toList(),
+                                    canvasStrokeRenderer = canvasStrokeRenderer,
+                                    canvasTransform = Matrix(),
+                                    onBitmap = {
+                                        bitmapRe = it
+                                        showDialog = true
+                                    }
+                                )
+                            }
+                        }
+                    })
+            }
             SelectedColor(
                 selectedColor = selectedColor,
                 color = Red
@@ -222,7 +266,45 @@ fun DrawingSurface(
 }
 
 @Composable
-private fun EraseDrawer(eraseDrawer: () -> Unit) {
+fun ShowBitmapDialog(bitmap: Bitmap?, showDialog: Boolean, onDismissRequest: () -> Unit) {
+    if (bitmap != null && showDialog) {
+        AlertDialog(
+            onDismissRequest = onDismissRequest,
+            title = {
+                Text(text = "Bitmap from Stroke")
+            },
+            text = {
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = "Displayed Bitmap",
+                    modifier = Modifier
+                )
+            },
+            confirmButton = {
+                Button(onClick = onDismissRequest) {
+                    Text("Close")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun CreateBitmapFromStrokeButton(bitmap: () -> Unit) {
+    Button(
+        onClick = {
+            bitmap()
+        },
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.baseline_image_24),
+            contentDescription = "image from stroke",
+        )
+    }
+}
+
+@Composable
+private fun EraseDrawerButton(eraseDrawer: () -> Unit) {
     Button(
         onClick = {
             eraseDrawer()
@@ -233,6 +315,35 @@ private fun EraseDrawer(eraseDrawer: () -> Unit) {
             contentDescription = "Delete",
         )
     }
+}
+
+suspend fun recordCanvasToBitmap(
+    strokes: List<Stroke>,
+    canvasStrokeRenderer: CanvasStrokeRenderer,
+    canvasTransform: Matrix? = null, // Optional transform
+    onBitmap: (Bitmap) -> Unit,
+) = withContext(Dispatchers.Default) {
+    val picture = Picture()
+    val canvas = picture.beginRecording(
+        2000,
+        2000
+    )
+
+    // Apply the transform before rendering
+    canvas.concat(canvasTransform)
+
+    // Render each stroke into the recording canvas
+    strokes.forEach { stroke ->
+        canvasStrokeRenderer.draw(
+            stroke = stroke,
+            canvas = canvas,
+            strokeToScreenTransform = canvasTransform ?: Matrix()
+        )
+    }
+
+    picture.endRecording()
+    val bitmap = Bitmap.createBitmap(picture)
+    onBitmap(bitmap)
 }
 
 @SuppressLint("RestrictedApi")
