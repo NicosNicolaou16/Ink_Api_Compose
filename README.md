@@ -6,10 +6,9 @@ to select colors and erase the drawing.
 ## Examples
 
 <p align="left">
-  <a title="simulator_image"><img src="examples/Screenshot_20241013_010019.png" height="500" width="200"></a>
-  <a title="simulator_image"><img src="examples/Screenshot_20241013_010101.png" height="500" width="200"></a>
-  <a title="simulator_image"><img src="examples/example_gif.gif" height="500" width="200"></a>
-  <a title="simulator_image"><img src="examples/example_gif1.gif" height="500" width="200"></a>
+  <a title="simulator_image"><img src="examples/Screenshot_20250509_221935.png" height="500" width="200"></a>
+  <a title="simulator_image"><img src="examples/Screenshot_20250509_222005.png" height="500" width="200"></a>
+  <a title="simulator_image"><img src="examples/example_gif2.gif" height="500" width="200"></a>
 </p>
 
 ## A Brief History Behind This Repository :smiley:
@@ -32,7 +31,7 @@ Ink Api version: 1.0.0-alpha04 <br />
 Target SDK version: 35 <br />
 Minimum SDK version: 28 <br />
 Kotlin version: 2.1.20 <br />
-Gradle version: 8.9.1 <br />
+Gradle version: 8.10.0 <br />
 
 ## References - Useful Links
 

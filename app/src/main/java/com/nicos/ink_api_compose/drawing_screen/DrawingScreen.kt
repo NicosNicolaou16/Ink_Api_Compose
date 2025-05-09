@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -354,13 +353,17 @@ private fun SelectedColor(
     selectingColor: () -> Unit
 ) {
 
-    Box(
+    Image(
+        painter = painterResource(id = R.drawable.ic_pencil),
+        contentDescription = "check",
+        colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
+            color = color
+        ),
         modifier = Modifier
             .size(
                 height = if (selectedColor.intValue == color.toArgb()) 100.dp else 70.dp,
                 width = 50.dp
             )
-            .background(color = color)
             .clickable {
                 selectedColor.intValue = color.toArgb()
                 selectingColor()
