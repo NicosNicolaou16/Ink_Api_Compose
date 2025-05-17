@@ -9,7 +9,7 @@ import com.nicos.ink_api_compose.data.database.type_converters.StrokeSetConverte
 
 @Entity
 data class StrokeEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = false) val id: Int = 0,
     val brushSize: Float,
     val brushColor: Long,
     val brushEpsilon: Float,
