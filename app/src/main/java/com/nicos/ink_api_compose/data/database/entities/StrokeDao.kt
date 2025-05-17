@@ -1,4 +1,4 @@
-package com.nicos.ink_api_compose.data.entities
+package com.nicos.ink_api_compose.data.database.entities
 
 import androidx.room.Dao
 import androidx.room.Delete

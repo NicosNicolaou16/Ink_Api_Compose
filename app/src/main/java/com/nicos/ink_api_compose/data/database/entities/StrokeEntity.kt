@@ -1,10 +1,10 @@
-package com.nicos.ink_api_compose.data.entities
+package com.nicos.ink_api_compose.data.database.entities
 
 import androidx.ink.strokes.Stroke
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.nicos.ink_api_compose.data.type_converters.StrokeSetConverter
+import com.nicos.ink_api_compose.data.database.type_converters.StrokeSetConverter
 
 @Entity
 data class StrokeEntity(

@@ -1,8 +1,8 @@
-package com.nicos.ink_api_compose.data.type_converters
+package com.nicos.ink_api_compose.data.database.type_converters
 
 import androidx.ink.strokes.Stroke
 import androidx.room.TypeConverter
-import com.nicos.ink_api_compose.data.entities.StrokeEntity
+import com.nicos.ink_api_compose.data.database.entities.StrokeEntity
 
 class StrokeSetConverter {
     private val gson = Gson()
