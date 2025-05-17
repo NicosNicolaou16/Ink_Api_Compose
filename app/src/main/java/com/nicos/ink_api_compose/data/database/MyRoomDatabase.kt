@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.nicos.ink_api_compose.data.database.entities.StrokeDao
+import com.nicos.ink_api_compose.data.database.dao.StrokeDao
 import com.nicos.ink_api_compose.data.database.entities.StrokeEntity
 import com.nicos.ink_api_compose.data.database.type_converters.StrokeSetConverter
 import javax.inject.Inject
