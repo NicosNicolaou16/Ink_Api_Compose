@@ -24,6 +24,12 @@ I installed the app on their tablet, and they started drawing right away.
 - Erase Tool: Provides the option to erase any part of the drawing.
 - Tablet Compatibility: Works seamlessly on tablets for an enhanced drawing experience.
 - Convert the stroke to a bitmap and display it in a dialog.
+- An example of how to save a stroke to the Room database and load it from the database.
+    - In this example, the implementation always uses a single primary key with id = 1, overriding
+      the
+      stroke each time. This is not the best approach, but it is used here for simplicity and
+      demonstration purposes only. When the app goes into the background or is closed, the stroke is
+      saved. When the app is opened again, the last saved stroke is loaded.
 
 ## Versioning
 
