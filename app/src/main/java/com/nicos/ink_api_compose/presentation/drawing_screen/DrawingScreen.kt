@@ -1,4 +1,4 @@
-package com.nicos.ink_api_compose.drawing_screen
+package com.nicos.ink_api_compose.presentation.drawing_screen
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
@@ -33,8 +33,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
@@ -59,21 +61,31 @@ import com.nicos.ink_api_compose.ui.theme.Red
 import kotlinx.coroutines.Dispatchers
 import kotlin.collections.plus
 import androidx.core.graphics.createBitmap
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.ink.geometry.ImmutableBox
+import androidx.ink.geometry.Vec
+import com.nicos.ink_api_compose.utils.MyLifecycle
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+private val eraserBox = ImmutableBox.fromCenterAndDimensions(
+    Vec.ORIGIN,
+    Float.MAX_VALUE,
+    Float.MAX_VALUE
+)
 
 @SuppressLint("ClickableViewAccessibility", "RestrictedApi")
 @Composable
 fun DrawingSurface(
     innerPadding: PaddingValues,
-    finishedStrokesState: MutableState<Set<Stroke>>,
-    eraseDrawer: () -> Unit,
+    drawingViewModel: DrawingViewModel = hiltViewModel(),
 ) {
     var bitmapRe by remember {
         mutableStateOf(
             createBitmap(1, 1)
         )
     }
+    val state = drawingViewModel.state
     val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
     var inProgressStrokesView by remember { mutableStateOf<InProgressStrokesView?>(null) }
@@ -86,6 +98,12 @@ fun DrawingSurface(
         colorIntArgb = Color.Red.toArgb(),
         size = 15F,
         epsilon = 0.1F
+    )
+
+    MyLifecycle(
+        onStop = {
+            drawingViewModel.saveDrawing()
+        }
     )
 
     ShowBitmapDialog(
@@ -103,7 +121,7 @@ fun DrawingSurface(
                     addFinishedStrokesListener(
                         object : InProgressStrokesFinishedListener {
                             override fun onStrokesFinished(strokes: Map<InProgressStrokeId, Stroke>) {
-                                finishedStrokesState.value += strokes.values
+                                state.finishedStrokesState.value += strokes.values
                                 inProgressStrokesView?.removeFinishedStrokes(strokes.keys)
                                 // Caller must recompose from callback strokes, cannot wait until a later frame.
                                 removeFinishedStrokes(strokes.keys)
@@ -193,7 +211,7 @@ fun DrawingSurface(
             drawContext.canvas.nativeCanvas.concat(canvasTransform)
             val canvas = drawContext.canvas.nativeCanvas
 
-            finishedStrokesState.value.forEach { stroke ->
+            state.finishedStrokesState.value.forEach { stroke ->
                 canvasStrokeRenderer.draw(
                     stroke = stroke,
                     canvas = canvas,
@@ -213,14 +231,18 @@ fun DrawingSurface(
         ) {
             Column {
                 EraseDrawerButton(
-                    eraseDrawer = eraseDrawer
+                    eraseDrawer = {
+                        eraseWholeStrokes(
+                            finishedStrokesState = state.finishedStrokesState
+                        )
+                    }
                 )
                 CreateBitmapFromStrokeButton(
                     bitmap = {
                         scope.launch {
-                            if (finishedStrokesState.value.isNotEmpty()) {
+                            if (state.finishedStrokesState.value.isNotEmpty()) {
                                 recordCanvasToBitmap(
-                                    strokes = finishedStrokesState.value.toList(),
+                                    strokes = state.finishedStrokesState.value.toList(),
                                     canvasStrokeRenderer = canvasStrokeRenderer,
                                     canvasTransform = Matrix(),
                                     onBitmap = {
@@ -356,7 +378,7 @@ private fun SelectedColor(
     Image(
         painter = painterResource(id = R.drawable.ic_pencil),
         contentDescription = "check",
-        colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
+        colorFilter = ColorFilter.tint(
             color = color
         ),
         modifier = Modifier
@@ -368,4 +390,22 @@ private fun SelectedColor(
                 selectedColor.intValue = color.toArgb()
                 selectingColor()
             })
+}
+
+private fun eraseWholeStrokes(
+    finishedStrokesState: MutableState<Set<Stroke>>,
+) {
+    val threshold = 0.1f
+
+    val strokesToErase = finishedStrokesState.value.filter { stroke ->
+        stroke.shape.computeCoverageIsGreaterThan(
+            box = eraserBox,
+            coverageThreshold = threshold,
+        )
+    }
+    if (strokesToErase.isNotEmpty()) {
+        Snapshot.withMutableSnapshot {
+            finishedStrokesState.value -= strokesToErase
+        }
+    }
 }
