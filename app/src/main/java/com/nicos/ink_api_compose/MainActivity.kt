@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.ink.geometry.ImmutableBox
 import androidx.ink.geometry.Vec
 import androidx.ink.strokes.Stroke
-import com.nicos.ink_api_compose.drawing_screen.DrawingSurface
+import com.nicos.ink_api_compose.presentation.drawing_screen.DrawingSurface
 import com.nicos.ink_api_compose.ui.theme.Ink_Api_ComposeTheme
 
 class MainActivity : ComponentActivity() {

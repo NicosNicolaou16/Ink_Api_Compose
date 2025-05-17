@@ -1,4 +1,4 @@
-package com.nicos.ink_api_compose.drawing_screen
+package com.nicos.ink_api_compose.presentation.drawing_screen
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
@@ -35,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
@@ -356,7 +357,7 @@ private fun SelectedColor(
     Image(
         painter = painterResource(id = R.drawable.ic_pencil),
         contentDescription = "check",
-        colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
+        colorFilter = ColorFilter.tint(
             color = color
         ),
         modifier = Modifier

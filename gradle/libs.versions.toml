@@ -15,6 +15,7 @@ kspVersion = "2.1.21-2.0.1"
 roomVersion = "2.7.1"
 hiltVersion = "2.56.2"
 hiltCompilerVersion = "1.2.0"
+gsonVersion = "2.13.1"
 
 [libraries]
 # Architecture
@@ -48,6 +49,8 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 dagger-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
 dagger-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
 hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltCompilerVersion" }
+# Gson
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gsonVersion" }
 # Unit Test
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
