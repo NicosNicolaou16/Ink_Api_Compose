@@ -3,10 +3,8 @@ package com.nicos.ink_api_compose.presentation.drawing_screen
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nicos.ink_api_compose.data.database.entities.StrokeEntity
 import com.nicos.ink_api_compose.data.stroke_converter.StrokeConverters
 import com.nicos.ink_api_compose.domain.StrokeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

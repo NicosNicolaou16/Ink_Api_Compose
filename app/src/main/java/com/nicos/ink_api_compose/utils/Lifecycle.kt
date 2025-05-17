@@ -1,4 +1,4 @@
-package com.nicos.ink_api_compose
+package com.nicos.ink_api_compose.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect

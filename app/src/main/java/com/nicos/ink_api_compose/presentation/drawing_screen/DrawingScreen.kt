@@ -64,7 +64,7 @@ import androidx.core.graphics.createBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.ink.geometry.ImmutableBox
 import androidx.ink.geometry.Vec
-import com.nicos.ink_api_compose.MyLifecycle
+import com.nicos.ink_api_compose.utils.MyLifecycle
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
