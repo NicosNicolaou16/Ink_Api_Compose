@@ -14,6 +14,6 @@ interface StrokeDao {
     @Delete
     suspend fun deleteStroke(stroke: StrokeEntity)
 
-    @Query("SELECT * FROM strokeentity")
-    suspend fun getStrokes(): List<StrokeEntity>
+    @Query("SELECT * FROM strokeentity WHERE id = 1")
+    suspend fun getStroke(): StrokeEntity
 }

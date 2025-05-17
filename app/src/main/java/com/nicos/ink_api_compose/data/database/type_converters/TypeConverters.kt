@@ -2,6 +2,9 @@ package com.nicos.ink_api_compose.data.database.type_converters
 
 import androidx.ink.strokes.Stroke
 import androidx.room.TypeConverter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.nicos.ink_api_compose.data.stroke_converter.StrokeConverters
 import com.nicos.ink_api_compose.data.database.entities.StrokeEntity
 
 class StrokeSetConverter {

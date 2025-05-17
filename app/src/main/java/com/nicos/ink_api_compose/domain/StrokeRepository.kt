@@ -4,6 +4,5 @@ import com.nicos.ink_api_compose.data.database.entities.StrokeEntity
 
 interface StrokeRepository {
     suspend fun insertStroke(stroke: StrokeEntity)
-    suspend fun deleteStroke(stroke: StrokeEntity)
-    suspend fun getStrokes(): List<StrokeEntity>
+    suspend fun getStroke(): StrokeEntity
 }

@@ -15,7 +15,9 @@ import androidx.ink.geometry.Vec
 import androidx.ink.strokes.Stroke
 import com.nicos.ink_api_compose.presentation.drawing_screen.DrawingSurface
 import com.nicos.ink_api_compose.ui.theme.Ink_Api_ComposeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val finishedStrokesState = mutableStateOf(emptySet<Stroke>())
 
