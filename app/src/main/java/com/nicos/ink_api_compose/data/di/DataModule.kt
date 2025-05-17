@@ -3,6 +3,7 @@ package com.nicos.ink_api_compose.data.di
 import android.content.Context
 import com.nicos.ink_api_compose.data.database.MyRoomDatabase
 import com.nicos.ink_api_compose.data.repositories_impl.StrokeRepositoryImpl
+import com.nicos.ink_api_compose.data.stroke_converter.StrokeConverters
 import com.nicos.ink_api_compose.domain.StrokeRepository
 import dagger.Module
 import dagger.Provides
@@ -20,6 +21,10 @@ object DataModule {
         return MyRoomDatabase.Companion.invoke(context)
     }
 
+    @Provides
+    fun strokeConverters(): StrokeConverters {
+        return StrokeConverters()
+    }
 
     @Provides
     fun provideDrawingRepository(myRoomDatabase: MyRoomDatabase): StrokeRepository {

@@ -8,10 +8,10 @@ class StrokeRepositoryImpl(
     private val myRoomDatabase: MyRoomDatabase
 ) : StrokeRepository {
     override suspend fun insertStroke(stroke: StrokeEntity) {
-
+        myRoomDatabase.strokeDao().insertStroke(stroke)
     }
 
-    override suspend fun getStroke(): StrokeEntity {
+    override suspend fun getStroke(): StrokeEntity? {
         return myRoomDatabase.strokeDao().getStroke()
     }
 }
