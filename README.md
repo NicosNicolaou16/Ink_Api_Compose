@@ -32,6 +32,37 @@ I installed the app on their tablet, and they started drawing right away.
       demonstration purposes only. When the app goes into the background or is closed, the stroke is
       saved. When the app is opened again, the last saved stroke is loaded.
 
+# The Project Contain the following technologies
+
+The programming language is the [Kotlin](https://kotlinlang.org/docs/getting-started.html), it is a
+modern, JVM-based programming language that is concise, safe, and interoperable with Java. <br />
+[Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) is used for asynchronous
+tasks. <br />
+[Kotlin KTX](https://developer.android.com/kotlin/ktx) is a collection of Kotlin extensions that
+offer more concise and expressive code for working with Android APIs and libraries.
+The UI is build using [Jetpack Compose](https://developer.android.com/develop/ui/compose). <br />
+[Room Database](https://developer.android.com/training/data-storage/room) is responsible for saving
+the retrieved data from the remote server, querying data from the local database, and supporting
+offline functionality.  <br />
+[Hilt Dependencies Injection](https://developer.android.com/training/dependency-injection/hilt-android)
+is an Android library that simplifies dependency injection by using annotations to automatically
+manage and provide dependencies across components, built on top of
+Dagger. ([Documentation](https://dagger.dev/hilt/)) <br />
+[MVVM](https://developer.android.com/topic/architecture#recommended-app-arch) with repository is an
+architecture where the Repository manages data sources (e.g., network, database), the ViewModel
+processes the data for the UI, and the View displays the UI, ensuring a clear separation of
+concerns. <br />
+[KSP](https://kotlinlang.org/docs/ksp-overview.html) (Kotlin Symbol Processing) is a tool for
+processing Kotlin code at compile time, enabling developers to create powerful code generation and
+annotation processing solutions. (ksp only setup for Room
+Database) ([Repository](https://github.com/google/ksp)) <br />
+[R8](https://developer.android.com/build/shrink-code) enabled, is a code shrinker and obfuscator for
+Android that optimizes and reduces the size of APKs by removing unused code and resources, while
+also obfuscating the remaining code to improve security. <br />
+[Gradle Kotlin DSL](https://docs.gradle.org/current/userguide/kotlin_dsl.html) is a domain-specific
+language for configuring Gradle build scripts using Kotlin syntax, offering better IDE support and
+type safety compared to Groovy. <br />
+
 ## Versioning
 
 Ink Api version: 1.0.0-alpha04 <br />
