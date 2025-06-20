@@ -101,7 +101,7 @@ class StrokeConverters {
         val batch = MutableStrokeInputBatch()
 
         serializedBatch.inputs.forEach { input ->
-            batch.addOrThrow(
+            batch.add(
                 type = toolType,
                 x = input.x,
                 y = input.y,
