@@ -61,7 +61,7 @@ import com.nicos.ink_api_compose.ui.theme.Red
 import kotlinx.coroutines.Dispatchers
 import kotlin.collections.plus
 import androidx.core.graphics.createBitmap
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.ink.geometry.ImmutableBox
 import androidx.ink.geometry.Vec
 import com.nicos.ink_api_compose.utils.MyLifecycle
