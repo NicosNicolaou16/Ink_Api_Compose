@@ -94,7 +94,7 @@ fun DrawingSurface(
     val currentPointerId = remember { mutableStateOf<Int?>(null) }
     val currentStrokeId = remember { mutableStateOf<InProgressStrokeId?>(null) }
     var defaultBrush = Brush.createWithColorIntArgb(
-        family = StockBrushes.pressurePenLatest,
+        family = StockBrushes.pressurePen(),
         colorIntArgb = Color.Red.toArgb(),
         size = 15F,
         epsilon = 0.1F
