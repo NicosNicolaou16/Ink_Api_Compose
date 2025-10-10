@@ -61,7 +61,7 @@ import com.nicos.ink_api_compose.ui.theme.Red
 import kotlinx.coroutines.Dispatchers
 import kotlin.collections.plus
 import androidx.core.graphics.createBitmap
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.ink.geometry.ImmutableBox
 import androidx.ink.geometry.Vec
 import com.nicos.ink_api_compose.utils.MyLifecycle
@@ -94,7 +94,7 @@ fun DrawingSurface(
     val currentPointerId = remember { mutableStateOf<Int?>(null) }
     val currentStrokeId = remember { mutableStateOf<InProgressStrokeId?>(null) }
     var defaultBrush = Brush.createWithColorIntArgb(
-        family = StockBrushes.pressurePenLatest,
+        family = StockBrushes.pressurePen(),
         colorIntArgb = Color.Red.toArgb(),
         size = 15F,
         epsilon = 0.1F

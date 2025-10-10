@@ -18,9 +18,9 @@ class StrokeConverters {
     companion object {
         private val stockBrushToEnumValues =
             mapOf(
-                StockBrushes.markerV1 to SerializedStockBrush.MARKER_V1,
-                StockBrushes.pressurePenV1 to SerializedStockBrush.PRESSURE_PEN_V1,
-                StockBrushes.highlighterV1 to SerializedStockBrush.HIGHLIGHTER_V1,
+                StockBrushes.marker() to SerializedStockBrush.MARKER_V1,
+                StockBrushes.pressurePen() to SerializedStockBrush.PRESSURE_PEN_V1,
+                StockBrushes.highlighter() to SerializedStockBrush.HIGHLIGHTER_V1,
             )
 
         private val enumToStockBrush =
@@ -77,7 +77,7 @@ class StrokeConverters {
     }
 
     private fun deserializeBrush(serializedBrush: SerializedBrush): Brush {
-        val stockBrushFamily = enumToStockBrush[serializedBrush.stockBrush] ?: StockBrushes.markerV1
+        val stockBrushFamily = enumToStockBrush[serializedBrush.stockBrush] ?: StockBrushes.marker()
 
         return Brush.createWithColorLong(
             family = stockBrushFamily,
