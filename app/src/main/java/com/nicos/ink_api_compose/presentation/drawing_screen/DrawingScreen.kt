@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.nativeCanvas
@@ -122,6 +123,7 @@ fun DrawingSurface(
                 modifier = Modifier.fillMaxSize(),
                 factory = { context ->
                     val rootView = FrameLayout(context)
+                    //rootView.setBackgroundColor(android.graphics.Color.YELLOW)
                     InProgressStrokesView(context).apply {
                         eagerInit()
                         addFinishedStrokesListener(
@@ -212,7 +214,10 @@ fun DrawingSurface(
                 },
             )
 
-            Canvas(modifier = Modifier) {
+            Canvas(modifier = Modifier
+                .fillMaxSize()
+                .clipToBounds()) {
+                drawRect(color = androidx.compose.ui.graphics.Color.Transparent)
                 val canvasTransform = Matrix()
                 drawContext.canvas.nativeCanvas.concat(canvasTransform)
                 val canvas = drawContext.canvas.nativeCanvas
@@ -229,7 +234,7 @@ fun DrawingSurface(
 
         Row(
             modifier = Modifier
-                .height(height = 200.dp)
+                .height(height = 150.dp)
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(fraction = 0.7f)
                 .safeDrawingPadding(),
