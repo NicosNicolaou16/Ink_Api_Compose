@@ -123,7 +123,6 @@ fun DrawingSurface(
                 modifier = Modifier.fillMaxSize(),
                 factory = { context ->
                     val rootView = FrameLayout(context)
-                    //rootView.setBackgroundColor(android.graphics.Color.YELLOW)
                     InProgressStrokesView(context).apply {
                         eagerInit()
                         addFinishedStrokesListener(
