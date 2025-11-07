@@ -233,7 +233,7 @@ fun DrawingSurface(
 
         Row(
             modifier = Modifier
-                .height(height = 150.dp)
+                .height(height = 200.dp)
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(fraction = 0.7f)
                 .safeDrawingPadding(),
