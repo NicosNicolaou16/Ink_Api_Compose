@@ -4,8 +4,8 @@ import androidx.ink.strokes.Stroke
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.nicos.ink_api_compose.data.database.type_converters.StrokeConverter
 import com.nicos.ink_api_compose.data.stroke_converter.SerializedStockBrush
-import com.nicos.ink_api_compose.data.database.type_converters.StrokeSetConverter
 
 @Entity
 data class StrokeEntity(
@@ -15,6 +15,6 @@ data class StrokeEntity(
     val brushEpsilon: Float,
     val stockBrush: SerializedStockBrush,
     val strokeInputs: String?,
-    @TypeConverters(StrokeSetConverter::class)
-    val finishedStrokes: Set<Stroke> = emptySet<Stroke>(),
+    @TypeConverters(StrokeConverter::class)
+    val finishedStrokes: Stroke? = null,
 )

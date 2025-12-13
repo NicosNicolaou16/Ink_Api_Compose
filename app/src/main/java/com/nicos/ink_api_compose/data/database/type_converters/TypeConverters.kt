@@ -7,21 +7,28 @@ import com.google.gson.reflect.TypeToken
 import com.nicos.ink_api_compose.data.stroke_converter.StrokeConverters
 import com.nicos.ink_api_compose.data.database.entities.StrokeEntity
 
-class StrokeSetConverter {
+class StrokeConverter {
     private val gson = Gson()
     private val converters = StrokeConverters()
-    private val listType = object : TypeToken<List<StrokeEntity>>() {}.type
+    private val entityType = object : TypeToken<StrokeEntity>() {}.type
 
+    /**
+     * Converts a single [Stroke] object into a JSON String.
+     */
     @TypeConverter
-    fun fromStrokeSet(strokes: Set<Stroke>?): String {
-        val entities = strokes?.map { converters.serializeStrokeToEntity(it) } ?: emptyList()
-        return gson.toJson(entities, listType)
+    fun fromStroke(stroke: Stroke?): String? {
+        if (stroke == null) return null
+        val entity = converters.serializeStrokeToEntity(stroke)
+        return gson.toJson(entity, entityType)
     }
 
+    /**
+     * Converts a JSON String back into a single [Stroke] object.
+     */
     @TypeConverter
-    fun toStrokeSet(json: String?): Set<Stroke> {
-        if (json.isNullOrEmpty()) return emptySet()
-        val entities: List<StrokeEntity> = gson.fromJson(json, listType)
-        return entities.mapNotNull { converters.deserializeEntityToStroke(it) }.toSet()
+    fun toStroke(json: String?): Stroke? {
+        if (json.isNullOrEmpty()) return null
+        val entity: StrokeEntity = gson.fromJson(json, entityType)
+        return converters.deserializeEntityToStroke(entity)
     }
 }
