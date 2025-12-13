@@ -65,7 +65,7 @@ type safety compared to Groovy. <br />
 
 ## Versioning
 
-Ink Api version: 1.0.0-beta02 <br />
+Ink Api version: 1.0.0-rc01 <br />
 Target SDK version: 36 <br />
 Minimum SDK version: 29 <br />
 Kotlin version: 2.2.21 <br />
