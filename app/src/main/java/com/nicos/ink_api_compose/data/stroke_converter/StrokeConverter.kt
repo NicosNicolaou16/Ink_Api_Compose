@@ -3,6 +3,8 @@ package com.nicos.ink_api_compose.data.stroke_converter
 import androidx.ink.brush.Brush
 import androidx.ink.brush.InputToolType
 import androidx.ink.brush.StockBrushes
+import androidx.ink.storage.decode
+import androidx.ink.storage.encode
 import androidx.ink.strokes.MutableStrokeInputBatch
 import androidx.ink.strokes.Stroke
 import androidx.ink.strokes.StrokeInput
@@ -10,6 +12,8 @@ import androidx.ink.strokes.StrokeInputBatch
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.nicos.ink_api_compose.data.database.entities.StrokeEntity
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 
 class StrokeConverters {
 
@@ -117,13 +121,17 @@ class StrokeConverters {
 
     fun serializeStrokeToEntity(stroke: Stroke): StrokeEntity {
         val serializedBrush = serializeBrush(stroke.brush)
-        val serializedInputs = serializeStrokeInputBatch(stroke.inputs)
+        //val serializedInputs = serializeStrokeInputBatch(stroke.inputs)
+        val encodedSerializedInputs = ByteArrayOutputStream().use { outputStream ->
+            stroke.inputs.encode(outputStream)
+            outputStream.toByteArray()
+        }
         return StrokeEntity(
             brushSize = serializedBrush.size,
             brushColor = serializedBrush.color,
             brushEpsilon = serializedBrush.epsilon,
             stockBrush = serializedBrush.stockBrush,
-            strokeInputs = gson.toJson(serializedInputs),
+            strokeInputs = gson.toJson(encodedSerializedInputs),
         )
     }
 
@@ -136,13 +144,17 @@ class StrokeConverters {
                 stockBrush = entity.stockBrush,
             )
 
-        val serializedInputs =
-            gson.fromJson(entity.strokeInputs, SerializedStrokeInputBatch::class.java)
+        /*val serializedInputs =
+            gson.fromJson(entity.strokeInputs, SerializedStrokeInputBatch::class.java)*/
+        val decodedSerializedInputs = gson.fromJson(entity.strokeInputs, ByteArray::class.java)
+        val inputsStroke = ByteArrayInputStream(decodedSerializedInputs).use { inputStream ->
+            StrokeInputBatch.decode(inputStream)
+        }
 
         val brush = deserializeBrush(serializedBrush)
-        val inputs = deserializeStrokeInputBatch(serializedInputs)
+        //val inputs = deserializeStrokeInputBatch(serializedInputs)
 
-        return Stroke(brush = brush, inputs = inputs)
+        return Stroke(brush = brush, inputs = inputsStroke)
     }
 
     fun brushToString(brush: Brush): String {

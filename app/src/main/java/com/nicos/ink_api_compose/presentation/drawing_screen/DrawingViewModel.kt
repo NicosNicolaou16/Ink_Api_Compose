@@ -32,9 +32,10 @@ class DrawingViewModel @Inject constructor(
                 Dispatchers.IO
             ) {
                 val strokeEntity = strokeRepository.getStroke()
-                if (strokeEntity == null || strokeEntity.finishedStrokes == null) return@async
+                if (strokeEntity == null || strokeEntity.strokeInputs == null) return@async
+                val stroke = strokeConverters.deserializeEntityToStroke(strokeEntity)
                 state.finishedStrokesState.value =
-                    state.finishedStrokesState.value.plus(strokeEntity.finishedStrokes)
+                    state.finishedStrokesState.value.plus(stroke)
 
             }.await()
             state = state.copy(
@@ -51,7 +52,6 @@ class DrawingViewModel @Inject constructor(
             strokeRepository.insertStroke(
                 strokeEntity.copy(
                     id = 1,
-                    finishedStrokes = stroke
                 )
             )
         }
