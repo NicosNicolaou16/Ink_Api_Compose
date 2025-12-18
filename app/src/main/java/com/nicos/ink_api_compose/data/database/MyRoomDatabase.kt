@@ -7,7 +7,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.nicos.ink_api_compose.data.database.dao.StrokeDao
 import com.nicos.ink_api_compose.data.database.entities.StrokeEntity
-import com.nicos.ink_api_compose.data.database.type_converters.StrokeConverter
 import javax.inject.Inject
 
 @Database(
@@ -15,9 +14,7 @@ import javax.inject.Inject
     version = 1,
     exportSchema = false
 )
-@TypeConverters(
-    StrokeConverter::class
-)
+@TypeConverters()
 abstract class MyRoomDatabase : RoomDatabase() {
     abstract fun strokeDao(): StrokeDao
 

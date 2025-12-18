@@ -121,7 +121,6 @@ class StrokeConverters {
 
     fun serializeStrokeToEntity(stroke: Stroke): StrokeEntity {
         val serializedBrush = serializeBrush(stroke.brush)
-        //val serializedInputs = serializeStrokeInputBatch(stroke.inputs)
         val encodedSerializedInputs = ByteArrayOutputStream().use { outputStream ->
             stroke.inputs.encode(outputStream)
             outputStream.toByteArray()
@@ -135,6 +134,7 @@ class StrokeConverters {
         )
     }
 
+
     fun deserializeEntityToStroke(entity: StrokeEntity): Stroke {
         val serializedBrush =
             SerializedBrush(
@@ -144,15 +144,12 @@ class StrokeConverters {
                 stockBrush = entity.stockBrush,
             )
 
-        /*val serializedInputs =
-            gson.fromJson(entity.strokeInputs, SerializedStrokeInputBatch::class.java)*/
         val decodedSerializedInputs = gson.fromJson(entity.strokeInputs, ByteArray::class.java)
         val inputsStroke = ByteArrayInputStream(decodedSerializedInputs).use { inputStream ->
             StrokeInputBatch.decode(inputStream)
         }
 
         val brush = deserializeBrush(serializedBrush)
-        //val inputs = deserializeStrokeInputBatch(serializedInputs)
 
         return Stroke(brush = brush, inputs = inputsStroke)
     }
