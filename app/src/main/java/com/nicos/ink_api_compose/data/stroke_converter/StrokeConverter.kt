@@ -28,26 +28,6 @@ class StrokeConverters {
             stockBrushToEnumValues.entries.associate { (key, value) -> value to key }
     }
 
-    private fun serializeBrush(brush: Brush): SerializedBrush {
-        return SerializedBrush(
-            size = brush.size,
-            color = brush.colorLong,
-            epsilon = brush.epsilon,
-            stockBrush = stockBrushToEnumValues[brush.family] ?: SerializedStockBrush.MARKER_V1,
-        )
-    }
-
-    private fun deserializeBrush(serializedBrush: SerializedBrush): Brush {
-        val stockBrushFamily = enumToStockBrush[serializedBrush.stockBrush] ?: StockBrushes.marker()
-
-        return Brush.createWithColorLong(
-            family = stockBrushFamily,
-            colorLong = serializedBrush.color,
-            size = serializedBrush.size,
-            epsilon = serializedBrush.epsilon,
-        )
-    }
-
     fun serializeStrokeToEntity(stroke: Stroke): StrokeEntity {
         val serializedBrush = serializeBrush(stroke.brush)
         val encodedSerializedInputs = ByteArrayOutputStream().use { outputStream ->
@@ -81,5 +61,25 @@ class StrokeConverters {
         val brush = deserializeBrush(serializedBrush)
 
         return Stroke(brush = brush, inputs = inputsStroke)
+    }
+
+    private fun serializeBrush(brush: Brush): SerializedBrush {
+        return SerializedBrush(
+            size = brush.size,
+            color = brush.colorLong,
+            epsilon = brush.epsilon,
+            stockBrush = stockBrushToEnumValues[brush.family] ?: SerializedStockBrush.MARKER_V1,
+        )
+    }
+
+    private fun deserializeBrush(serializedBrush: SerializedBrush): Brush {
+        val stockBrushFamily = enumToStockBrush[serializedBrush.stockBrush] ?: StockBrushes.marker()
+
+        return Brush.createWithColorLong(
+            family = stockBrushFamily,
+            colorLong = serializedBrush.color,
+            size = serializedBrush.size,
+            epsilon = serializedBrush.epsilon,
+        )
     }
 }
