@@ -83,7 +83,9 @@ https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-ap
 https://developer.android.com/jetpack/androidx/releases/ink <br />
 https://x.com/AndroidDev/status/1843758267404554563 <br />
 https://issuetracker.google.com/issues/383380976 <br />
+
 ### Important Resources for optimize storage to save the Stroke in Room Database (Examples) <br />
+
 https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-state-preservation <br />
 https://github.com/android/cahier <br />
 https://github.com/android/cahier/blob/main/app/src/main/java/com/example/cahier/data/OfflineNotesRepository.kt <br />
