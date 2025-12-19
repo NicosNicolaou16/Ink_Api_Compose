@@ -14,7 +14,7 @@ import javax.inject.Inject
     version = 1,
     exportSchema = false
 )
-@TypeConverters()
+@TypeConverters
 abstract class MyRoomDatabase : RoomDatabase() {
     abstract fun strokeDao(): StrokeDao
 
