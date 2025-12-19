@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.ink.nativeloader)
     implementation(libs.ink.rendering)
     implementation(libs.ink.strokes)
+    implementation(libs.androidx.ink.storage)
     //Motion Prediction
     implementation(libs.androidx.input.motionprediction)
     // Hilt

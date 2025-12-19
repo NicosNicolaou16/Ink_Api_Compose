@@ -32,9 +32,12 @@ class DrawingViewModel @Inject constructor(
                 Dispatchers.IO
             ) {
                 val strokeEntity = strokeRepository.getStroke()
-                if (strokeEntity == null || strokeEntity.finishedStrokes == null) return@async
+                if (strokeEntity == null || strokeEntity.strokeInputs == null) return@async
+                // Convert the strokeEntity to a stroke
+                val stroke = strokeConverters.deserializeEntityToStroke(strokeEntity)
+                // Add the stroke to the finishedStrokesState
                 state.finishedStrokesState.value =
-                    state.finishedStrokesState.value.plus(strokeEntity.finishedStrokes)
+                    state.finishedStrokesState.value.plus(stroke)
 
             }.await()
             state = state.copy(
@@ -47,11 +50,12 @@ class DrawingViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val stroke = state.finishedStrokesState.value.lastOrNull()
             if (stroke == null) return@launch
+            // Convert the stroke to a strokeEntity
             val strokeEntity = strokeConverters.serializeStrokeToEntity(stroke)
+            // Update the stroke in the database
             strokeRepository.insertStroke(
                 strokeEntity.copy(
                     id = 1,
-                    finishedStrokes = stroke
                 )
             )
         }

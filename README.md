@@ -65,10 +65,10 @@ type safety compared to Groovy. <br />
 
 ## Versioning
 
-Ink Api version: 1.0.0-rc01 <br />
+Ink Api version: 1.0.0 <br />
 Target SDK version: 36 <br />
 Minimum SDK version: 29 <br />
-Kotlin version: 2.2.21 <br />
+Kotlin version: 2.3.0 <br />
 Gradle version: 8.13.2 <br />
 
 ## References - Useful Links
@@ -83,3 +83,11 @@ https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-ap
 https://developer.android.com/jetpack/androidx/releases/ink <br />
 https://x.com/AndroidDev/status/1843758267404554563 <br />
 https://issuetracker.google.com/issues/383380976 <br />
+
+### Important Resources for optimize storage to save the Stroke in Room Database (Examples) <br />
+
+https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-state-preservation <br />
+https://github.com/android/cahier <br />
+https://github.com/android/cahier/blob/main/app/src/main/java/com/example/cahier/data/OfflineNotesRepository.kt <br />
+https://github.com/android/cahier/blob/main/app/src/main/java/com/example/cahier/ui/Converters.kt <br />
+https://developer.android.com/reference/kotlin/androidx/ink/storage/package-summary#(androidx.ink.strokes.StrokeInputBatch).encode(java.io.OutputStream) <br />
