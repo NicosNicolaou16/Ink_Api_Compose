@@ -6,15 +6,12 @@ import androidx.ink.storage.decode
 import androidx.ink.storage.encode
 import androidx.ink.strokes.Stroke
 import androidx.ink.strokes.StrokeInputBatch
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.nicos.ink_api_compose.data.database.entities.StrokeEntity
+import kotlinx.serialization.json.Json
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
 class StrokeConverters {
-
-    private val gson: Gson = GsonBuilder().create()
 
     companion object {
         private val stockBrushToEnumValues =
@@ -28,23 +25,25 @@ class StrokeConverters {
             stockBrushToEnumValues.entries.associate { (key, value) -> value to key }
     }
 
-    fun serializeStrokeToEntity(stroke: Stroke): StrokeEntity {
-        val serializedBrush = serializeBrush(stroke.brush)
-        val encodedSerializedInputs = ByteArrayOutputStream().use { outputStream ->
-            stroke.inputs.encode(outputStream)
-            outputStream.toByteArray()
+    fun serializeStrokeToEntity(stroke: Set<Stroke>): StrokeEntity {
+        val serializedBrush = serializeBrush(stroke.last().brush)
+        val encodedSerializedInputs = stroke.map {
+            ByteArrayOutputStream().use { outputStream ->
+                it.inputs.encode(outputStream)
+                outputStream.toByteArray()
+            }
         }
         return StrokeEntity(
             brushSize = serializedBrush.size,
             brushColor = serializedBrush.color,
             brushEpsilon = serializedBrush.epsilon,
             stockBrush = serializedBrush.stockBrush,
-            strokeInputs = gson.toJson(encodedSerializedInputs),
+            strokeInputs = Json.encodeToString(encodedSerializedInputs),
         )
     }
 
 
-    fun deserializeEntityToStroke(entity: StrokeEntity): Stroke {
+    fun deserializeEntityToStroke(entity: StrokeEntity): Set<Stroke> {
         val serializedBrush =
             SerializedBrush(
                 size = entity.brushSize,
@@ -53,14 +52,16 @@ class StrokeConverters {
                 stockBrush = entity.stockBrush,
             )
 
-        val decodedSerializedInputs = gson.fromJson(entity.strokeInputs, ByteArray::class.java)
-        val inputsStroke = ByteArrayInputStream(decodedSerializedInputs).use { inputStream ->
-            StrokeInputBatch.decode(inputStream)
+        val decodedSerializedInputs = Json.decodeFromString<List<ByteArray>>(entity.strokeInputs)
+        val inputsStroke = decodedSerializedInputs.map {
+            ByteArrayInputStream(it).use { inputStream ->
+                StrokeInputBatch.decode(inputStream)
+            }
         }
 
         val brush = deserializeBrush(serializedBrush)
 
-        return Stroke(brush = brush, inputs = inputsStroke)
+        return inputsStroke.map { Stroke(brush = brush, inputs = it) }.toSet()
     }
 
     private fun serializeBrush(brush: Brush): SerializedBrush {

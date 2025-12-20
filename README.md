@@ -73,21 +73,21 @@ Gradle version: 8.13.2 <br />
 
 ## References - Useful Links
 
-https://android-developers.googleblog.com/2024/10/introducing-ink-api-jetpack-library.html <br />
-https://developer.android.com/develop/ui/compose/touch-input/stylus-input/about-ink-api <br />
-https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-modules <br />
-https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-setup <br />
-https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-draw-stroke <br />
-https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-geometry-apis <br />
-https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-state-preservation <br />
-https://developer.android.com/jetpack/androidx/releases/ink <br />
-https://x.com/AndroidDev/status/1843758267404554563 <br />
-https://issuetracker.google.com/issues/383380976 <br />
+- https://android-developers.googleblog.com/2024/10/introducing-ink-api-jetpack-library.html <br />
+- https://developer.android.com/develop/ui/compose/touch-input/stylus-input/about-ink-api <br />
+- https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-modules <br />
+- https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-setup <br />
+- https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-draw-stroke <br />
+- https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-geometry-apis <br />
+- https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-state-preservation <br />
+- https://developer.android.com/jetpack/androidx/releases/ink <br />
+- https://x.com/AndroidDev/status/1843758267404554563 <br />
+- https://issuetracker.google.com/issues/383380976 <br />
 
 ### Important Resources for optimize storage to save the Stroke in Room Database (Examples) <br />
 
-https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-state-preservation <br />
-https://github.com/android/cahier <br />
-https://github.com/android/cahier/blob/main/app/src/main/java/com/example/cahier/data/OfflineNotesRepository.kt <br />
-https://github.com/android/cahier/blob/main/app/src/main/java/com/example/cahier/ui/Converters.kt <br />
-https://developer.android.com/reference/kotlin/androidx/ink/storage/package-summary#(androidx.ink.strokes.StrokeInputBatch).encode(java.io.OutputStream) <br />
+- https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-state-preservation <br />
+- https://github.com/android/cahier <br />
+- https://github.com/android/cahier/blob/main/app/src/main/java/com/example/cahier/data/OfflineNotesRepository.kt <br />
+- https://github.com/android/cahier/blob/main/app/src/main/java/com/example/cahier/ui/Converters.kt <br />
+- https://developer.android.com/reference/kotlin/androidx/ink/storage/package-summary#(androidx.ink.strokes.StrokeInputBatch).encode(java.io.OutputStream) <br />

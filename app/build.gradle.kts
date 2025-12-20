@@ -87,8 +87,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
-    //Gson
-    implementation(libs.gson)
+    // Kotlin Serialization
+    implementation(libs.kotlinx.serialization.json)
     //Unit Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
