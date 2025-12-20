@@ -25,7 +25,7 @@ class StrokeConverters {
             stockBrushToEnumValues.entries.associate { (key, value) -> value to key }
     }
 
-    fun serializeStrokeToEntity(stroke: List<Stroke>): StrokeEntity {
+    fun serializeStrokeToEntity(stroke: Set<Stroke>): StrokeEntity {
         val serializedBrush = serializeBrush(stroke.last().brush)
         val encodedSerializedInputs = stroke.map {
             ByteArrayOutputStream().use { outputStream ->
