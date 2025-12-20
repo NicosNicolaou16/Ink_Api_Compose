@@ -11,5 +11,5 @@ data class StrokeEntity(
     val brushColor: Long,
     val brushEpsilon: Float,
     val stockBrush: SerializedStockBrush,
-    val strokeInputs: String?,
+    val strokeInputs: String,
 )
