@@ -30,6 +30,9 @@ class DrawingViewModel @Inject constructor(
     var state by mutableStateOf(DrawingState())
         private set
 
+    private var previousPoint: MutableVec? = null
+    private val eraserPadding = 50f
+
     init {
         loadDrawing()
     }
@@ -66,9 +69,6 @@ class DrawingViewModel @Inject constructor(
             )
         }
     }
-
-    private var previousPoint: MutableVec? = null
-    private val eraserPadding = 50f
 
     fun startErase() {
         previousPoint = null
