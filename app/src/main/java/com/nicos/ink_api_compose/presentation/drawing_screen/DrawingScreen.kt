@@ -80,11 +80,6 @@ fun DrawingSurface(
     innerPadding: PaddingValues,
     drawingViewModel: DrawingViewModel = hiltViewModel(),
 ) {
-    var bitmapRe by remember {
-        mutableStateOf(
-            createBitmap(1, 1)
-        )
-    }
     val state = drawingViewModel.state
     var showDialog by remember { mutableStateOf(false) }
     val selectedColor = remember { mutableIntStateOf(Color.Red.toArgb()) }
@@ -103,10 +98,13 @@ fun DrawingSurface(
         }
     )
 
+    showDialog = state.bitmap != null
     ShowBitmapDialog(
-        bitmap = bitmapRe,
+        bitmap = state.bitmap,
         showDialog = showDialog,
-        onDismissRequest = { showDialog = false })
+        onDismissRequest = {
+            drawingViewModel.setBitmapAsNull()
+        })
 
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -154,15 +152,12 @@ fun DrawingSurface(
 
         BottomView(
             state = state,
+            drawingViewModel = drawingViewModel,
             isEraseMode = isEraseMode,
             selectedColor = selectedColor,
             canvasStrokeRenderer,
             partiallyErase = {
                 isEraseMode = !isEraseMode
-            },
-            bitmap = {
-                bitmapRe = it
-                showDialog = true
             },
         )
     }
@@ -171,11 +166,11 @@ fun DrawingSurface(
 @Composable
 private fun BottomView(
     state: DrawingState,
+    drawingViewModel: DrawingViewModel,
     isEraseMode: Boolean,
     selectedColor: MutableIntState,
     canvasStrokeRenderer: CanvasStrokeRenderer,
     partiallyErase: () -> Unit,
-    bitmap: (Bitmap) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -207,13 +202,10 @@ private fun BottomView(
                     bitmap = {
                         scope.launch {
                             if (state.finishedStrokesState.value.isNotEmpty()) {
-                                recordCanvasToBitmap(
+                                drawingViewModel.recordCanvasToBitmap(
                                     strokes = state.finishedStrokesState.value.toList(),
                                     canvasStrokeRenderer = canvasStrokeRenderer,
                                     canvasTransform = Matrix(),
-                                    onBitmap = {
-                                        bitmap(it)
-                                    }
                                 )
                             }
                         }
@@ -315,34 +307,6 @@ private fun EraseDrawerButton(eraseDrawer: () -> Unit) {
     }
 }
 
-suspend fun recordCanvasToBitmap(
-    strokes: List<Stroke>,
-    canvasStrokeRenderer: CanvasStrokeRenderer,
-    canvasTransform: Matrix? = null, // Optional transform
-    onBitmap: (Bitmap) -> Unit,
-) = withContext(Dispatchers.Default) {
-    val picture = Picture()
-    val canvas = picture.beginRecording(
-        2000,
-        2000
-    )
-
-    // Apply the transform before rendering
-    canvas.concat(canvasTransform)
-
-    // Render each stroke into the recording canvas
-    strokes.forEach { stroke ->
-        canvasStrokeRenderer.draw(
-            stroke = stroke,
-            canvas = canvas,
-            strokeToScreenTransform = canvasTransform ?: Matrix()
-        )
-    }
-
-    picture.endRecording()
-    val bitmap = Bitmap.createBitmap(picture)
-    onBitmap(bitmap)
-}
 
 @SuppressLint("RestrictedApi")
 @Composable

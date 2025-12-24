@@ -1,6 +1,9 @@
 package com.nicos.ink_api_compose.presentation.drawing_screen
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.graphics.Picture
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,6 +13,7 @@ import androidx.ink.geometry.Intersection.intersects
 import androidx.ink.geometry.MutableParallelogram
 import androidx.ink.geometry.MutableSegment
 import androidx.ink.geometry.MutableVec
+import androidx.ink.rendering.android.canvas.CanvasStrokeRenderer
 import androidx.ink.strokes.Stroke
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,6 +24,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class DrawingViewModel @Inject constructor(
@@ -116,5 +121,42 @@ class DrawingViewModel @Inject constructor(
         } else {
             currentStrokes.toSet()
         }
+    }
+
+    fun setBitmapAsNull() {
+        state = state.copy(
+            bitmap = null
+        )
+    }
+
+    suspend fun recordCanvasToBitmap(
+        strokes: List<Stroke>,
+        canvasStrokeRenderer: CanvasStrokeRenderer,
+        canvasTransform: Matrix? = null, // Optional transform
+    ) = withContext(Dispatchers.Default) {
+        val picture = Picture()
+        val canvas = picture.beginRecording(
+            2000,
+            2000
+        )
+
+        // Apply the transform before rendering
+        canvas.concat(canvasTransform)
+
+        // Render each stroke into the recording canvas
+        strokes.forEach { stroke ->
+            canvasStrokeRenderer.draw(
+                stroke = stroke,
+                canvas = canvas,
+                strokeToScreenTransform = canvasTransform ?: Matrix()
+            )
+        }
+
+        picture.endRecording()
+        val bitmap = Bitmap.createBitmap(picture)
+        state = state.copy(
+            bitmap = bitmap
+        )
+
     }
 }
