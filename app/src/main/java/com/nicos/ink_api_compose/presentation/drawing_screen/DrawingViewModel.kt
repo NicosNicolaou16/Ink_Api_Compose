@@ -170,7 +170,9 @@ class DrawingViewModel @Inject constructor(
         )
 
         // Apply the transform before rendering
-        canvas.concat(canvasTransform)
+        if (canvasTransform != null) {
+            canvas.concat(canvasTransform)
+        }
 
         // Render each stroke into the recording canvas
         strokes.forEach { stroke ->
