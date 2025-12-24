@@ -66,6 +66,7 @@ import com.nicos.ink_api_compose.utils.MyLifecycle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.collections.plus
 
 private val eraserBox = ImmutableBox.fromCenterAndDimensions(
     Vec.ORIGIN,
@@ -85,7 +86,6 @@ fun DrawingSurface(
         )
     }
     val state = drawingViewModel.state
-    val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
     val selectedColor = remember { mutableIntStateOf(Color.Red.toArgb()) }
     val canvasStrokeRenderer = CanvasStrokeRenderer.create()
@@ -107,6 +107,38 @@ fun DrawingSurface(
         bitmap = bitmapRe,
         showDialog = showDialog,
         onDismissRequest = { showDialog = false })
+
+    BottomView(
+        innerPadding = innerPadding,
+        drawingViewModel = drawingViewModel,
+        state = state,
+        isEraseMode = isEraseMode,
+        defaultBrush = defaultBrush,
+        selectedColor = selectedColor,
+        canvasStrokeRenderer,
+        partiallyErase = {
+            isEraseMode = !isEraseMode
+        },
+        bitmap = {
+            bitmapRe = it
+            showDialog = true
+        },
+    )
+}
+
+@Composable
+private fun BottomView(
+    innerPadding: PaddingValues,
+    drawingViewModel: DrawingViewModel,
+    state: DrawingState,
+    isEraseMode: Boolean,
+    defaultBrush: Brush,
+    selectedColor: MutableIntState,
+    canvasStrokeRenderer: CanvasStrokeRenderer,
+    partiallyErase: () -> Unit,
+    bitmap: (Bitmap) -> Unit,
+) {
+    val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -156,7 +188,6 @@ fun DrawingSurface(
             modifier = Modifier
                 .height(height = 200.dp)
                 .align(Alignment.CenterHorizontally)
-                //.fillMaxWidth(fraction = 0.7f)
                 .safeDrawingPadding(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
@@ -171,9 +202,9 @@ fun DrawingSurface(
                         }
                     )
                     Spacer(modifier = Modifier.padding(end = 5.dp))
-                    EraserToggleButton(
+                    EraserPartiallyToggleButton(
                         isEraseMode = isEraseMode,
-                        onClick = { isEraseMode = !isEraseMode }
+                        onClick = partiallyErase
                     )
                 }
                 CreateBitmapFromStrokeButton(
@@ -185,8 +216,7 @@ fun DrawingSurface(
                                     canvasStrokeRenderer = canvasStrokeRenderer,
                                     canvasTransform = Matrix(),
                                     onBitmap = {
-                                        bitmapRe = it
-                                        showDialog = true
+                                        bitmap(it)
                                     }
                                 )
                             }
@@ -214,14 +244,14 @@ fun DrawingSurface(
 }
 
 @Composable
-private fun EraserToggleButton(
+private fun EraserPartiallyToggleButton(
     isEraseMode: Boolean,
     onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isEraseMode) androidx.compose.ui.graphics.Color.Gray else androidx.compose.ui.graphics.Color.LightGray
+            containerColor = if (isEraseMode) androidx.compose.ui.graphics.Color.Red else androidx.compose.ui.graphics.Color.Gray
         )
     ) {
         Icon(
