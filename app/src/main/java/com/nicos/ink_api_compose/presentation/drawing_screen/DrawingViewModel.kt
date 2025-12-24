@@ -183,9 +183,10 @@ class DrawingViewModel @Inject constructor(
 
         picture.endRecording()
         val bitmap = Bitmap.createBitmap(picture)
-        state = state.copy(
-            bitmap = bitmap
-        )
-
+        withContext(Dispatchers.Main) {
+            state = state.copy(
+                bitmap = bitmap
+            )
+        }
     }
 }
