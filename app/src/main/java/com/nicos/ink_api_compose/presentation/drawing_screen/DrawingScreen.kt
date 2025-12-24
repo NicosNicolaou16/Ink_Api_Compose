@@ -68,12 +68,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.collections.plus
 
-private val eraserBox = ImmutableBox.fromCenterAndDimensions(
-    Vec.ORIGIN,
-    Float.MAX_VALUE,
-    Float.MAX_VALUE
-)
-
 @SuppressLint("ClickableViewAccessibility", "RestrictedApi")
 @Composable
 fun DrawingSurface(
@@ -187,7 +181,7 @@ private fun BottomView(
                 Row {
                     EraseDrawerButton(
                         eraseDrawer = {
-                            eraseWholeStrokes(
+                            drawingViewModel.eraseWholeStrokes(
                                 finishedStrokesState = state.finishedStrokesState
                             )
                         }
@@ -331,20 +325,3 @@ private fun SelectedColor(
             })
 }
 
-private fun eraseWholeStrokes(
-    finishedStrokesState: MutableState<Set<Stroke>>,
-) {
-    val threshold = 0.1f
-
-    val strokesToErase = finishedStrokesState.value.filter { stroke ->
-        stroke.shape.computeCoverageIsGreaterThan(
-            box = eraserBox,
-            coverageThreshold = threshold,
-        )
-    }
-    if (strokesToErase.isNotEmpty()) {
-        Snapshot.withMutableSnapshot {
-            finishedStrokesState.value -= strokesToErase
-        }
-    }
-}

@@ -4,14 +4,18 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.Picture
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.ink.geometry.AffineTransform
+import androidx.ink.geometry.ImmutableBox
 import androidx.ink.geometry.Intersection.intersects
 import androidx.ink.geometry.MutableParallelogram
 import androidx.ink.geometry.MutableSegment
 import androidx.ink.geometry.MutableVec
+import androidx.ink.geometry.Vec
 import androidx.ink.rendering.android.canvas.CanvasStrokeRenderer
 import androidx.ink.strokes.Stroke
 import androidx.lifecycle.ViewModel
@@ -24,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.collections.minus
 
 @HiltViewModel
 class DrawingViewModel @Inject constructor(
@@ -36,6 +41,12 @@ class DrawingViewModel @Inject constructor(
 
     private var previousPoint: MutableVec? = null
     private val eraserPadding = 50f
+
+    private val eraserBox = ImmutableBox.fromCenterAndDimensions(
+        Vec.ORIGIN,
+        Float.MAX_VALUE,
+        Float.MAX_VALUE
+    )
 
     init {
         loadDrawing()
@@ -119,6 +130,25 @@ class DrawingViewModel @Inject constructor(
             currentStrokes - strokesToRemove.toSet()
         } else {
             currentStrokes.toSet()
+        }
+    }
+
+    fun eraseWholeStrokes(
+        finishedStrokesState: MutableState<Set<Stroke>>,
+    ) {
+        val threshold = 0.1f
+
+        val strokesToErase = finishedStrokesState.value.filter { stroke ->
+            stroke.shape.computeCoverageIsGreaterThan(
+                box = eraserBox,
+                coverageThreshold = threshold,
+            )
+        }
+        if (strokesToErase.isNotEmpty()) {
+            Snapshot.withMutableSnapshot {
+                state.finishedStrokesState.value -= strokesToErase
+                state = state.copy(finishedStrokesState = state.finishedStrokesState)
+            }
         }
     }
 
