@@ -108,38 +108,6 @@ fun DrawingSurface(
         showDialog = showDialog,
         onDismissRequest = { showDialog = false })
 
-    BottomView(
-        innerPadding = innerPadding,
-        drawingViewModel = drawingViewModel,
-        state = state,
-        isEraseMode = isEraseMode,
-        defaultBrush = defaultBrush,
-        selectedColor = selectedColor,
-        canvasStrokeRenderer,
-        partiallyErase = {
-            isEraseMode = !isEraseMode
-        },
-        bitmap = {
-            bitmapRe = it
-            showDialog = true
-        },
-    )
-}
-
-@Composable
-private fun BottomView(
-    innerPadding: PaddingValues,
-    drawingViewModel: DrawingViewModel,
-    state: DrawingState,
-    isEraseMode: Boolean,
-    defaultBrush: Brush,
-    selectedColor: MutableIntState,
-    canvasStrokeRenderer: CanvasStrokeRenderer,
-    partiallyErase: () -> Unit,
-    bitmap: (Bitmap) -> Unit,
-) {
-    val scope = rememberCoroutineScope()
-
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -184,6 +152,34 @@ private fun BottomView(
             }
         }
 
+        BottomView(
+            state = state,
+            isEraseMode = isEraseMode,
+            selectedColor = selectedColor,
+            canvasStrokeRenderer,
+            partiallyErase = {
+                isEraseMode = !isEraseMode
+            },
+            bitmap = {
+                bitmapRe = it
+                showDialog = true
+            },
+        )
+    }
+}
+
+@Composable
+private fun BottomView(
+    state: DrawingState,
+    isEraseMode: Boolean,
+    selectedColor: MutableIntState,
+    canvasStrokeRenderer: CanvasStrokeRenderer,
+    partiallyErase: () -> Unit,
+    bitmap: (Bitmap) -> Unit,
+) {
+    val scope = rememberCoroutineScope()
+
+    Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
                 .height(height = 200.dp)
@@ -251,7 +247,7 @@ private fun EraserPartiallyToggleButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isEraseMode) androidx.compose.ui.graphics.Color.Red else androidx.compose.ui.graphics.Color.Gray
+            containerColor = if (isEraseMode) androidx.compose.ui.graphics.Color.Unspecified else androidx.compose.ui.graphics.Color.Gray
         )
     ) {
         Icon(
