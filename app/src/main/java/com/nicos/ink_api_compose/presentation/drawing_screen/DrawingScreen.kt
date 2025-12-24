@@ -4,13 +4,9 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.Picture
-import android.view.MotionEvent
-import android.view.View
-import android.widget.FrameLayout
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,33 +38,26 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.ink.authoring.InProgressStrokeId
-import androidx.ink.authoring.InProgressStrokesFinishedListener
-import androidx.ink.authoring.InProgressStrokesView
+import androidx.core.graphics.createBitmap
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.ink.authoring.compose.InProgressStrokes
 import androidx.ink.brush.Brush
 import androidx.ink.brush.StockBrushes
 import androidx.ink.brush.color.Color
 import androidx.ink.brush.color.toArgb
+import androidx.ink.geometry.ImmutableBox
+import androidx.ink.geometry.Vec
 import androidx.ink.rendering.android.canvas.CanvasStrokeRenderer
 import androidx.ink.strokes.Stroke
-import androidx.input.motionprediction.MotionEventPredictor
 import com.nicos.ink_api_compose.R
 import com.nicos.ink_api_compose.ui.theme.Blue
 import com.nicos.ink_api_compose.ui.theme.Green
 import com.nicos.ink_api_compose.ui.theme.Pink
 import com.nicos.ink_api_compose.ui.theme.Red
-import kotlinx.coroutines.Dispatchers
-import kotlin.collections.plus
-import androidx.core.graphics.createBitmap
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.ink.authoring.compose.InProgressStrokes
-import androidx.ink.geometry.ImmutableBox
-import androidx.ink.geometry.Vec
 import com.nicos.ink_api_compose.utils.MyLifecycle
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -92,12 +81,9 @@ fun DrawingSurface(
     val state = drawingViewModel.state
     val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
-    var inProgressStrokesView by remember { mutableStateOf<InProgressStrokesView?>(null) }
     val selectedColor = remember { mutableIntStateOf(Color.Red.toArgb()) }
     val canvasStrokeRenderer = CanvasStrokeRenderer.create()
-    val currentPointerId = remember { mutableStateOf<Int?>(null) }
-    val currentStrokeId = remember { mutableStateOf<InProgressStrokeId?>(null) }
-    var defaultBrush = Brush.createWithColorIntArgb(
+    val defaultBrush = Brush.createWithColorIntArgb(
         family = StockBrushes.pressurePen(),
         colorIntArgb = Color.Red.toArgb(),
         size = 15F,
@@ -214,7 +200,11 @@ fun DrawingSurface(
 }
 
 @Composable
-fun ShowBitmapDialog(bitmap: Bitmap?, showDialog: Boolean, onDismissRequest: () -> Unit) {
+fun ShowBitmapDialog(
+    bitmap: Bitmap?,
+    showDialog: Boolean,
+    onDismissRequest: () -> Unit
+) {
     if (bitmap != null && showDialog) {
         AlertDialog(
             onDismissRequest = onDismissRequest,
