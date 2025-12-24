@@ -133,14 +133,6 @@ fun DrawingSurface(
                     )
                 }
             }
-
-            if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(innerPadding)
-                )
-            }
         }
 
         BottomView(
