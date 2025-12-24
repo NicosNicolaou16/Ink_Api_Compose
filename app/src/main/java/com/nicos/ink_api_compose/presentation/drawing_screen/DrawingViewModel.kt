@@ -1,8 +1,16 @@
 package com.nicos.ink_api_compose.presentation.drawing_screen
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
+import androidx.ink.geometry.AffineTransform
+import androidx.ink.geometry.Intersection.intersects
+import androidx.ink.geometry.MutableParallelogram
+import androidx.ink.geometry.MutableSegment
+import androidx.ink.geometry.MutableVec
+import androidx.ink.strokes.Stroke
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nicos.ink_api_compose.data.stroke_converter.StrokeConverters
@@ -56,6 +64,57 @@ class DrawingViewModel @Inject constructor(
                     id = 1,
                 )
             )
+        }
+    }
+
+    private var previousPoint: MutableVec? = null
+    private val eraserPadding = 50f
+
+    fun startErase() {
+        previousPoint = null
+    }
+
+    fun endErase() {
+        previousPoint = null
+        viewModelScope.launch { saveDrawing() }
+    }
+
+    fun erase(x: Float, y: Float) {
+        val strokesBeforeErase = state.finishedStrokesState.value
+        val strokesAfterErase = eraseIntersectingStrokes(
+            x, y, strokesBeforeErase
+        )
+        state.finishedStrokesState.value = strokesAfterErase
+        if (strokesAfterErase.size != strokesBeforeErase.size) {
+            state = state.copy(
+                finishedStrokesState = state.finishedStrokesState
+            )
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun eraseIntersectingStrokes(
+        currentX: Float,
+        currentY: Float,
+        currentStrokes: Set<Stroke>,
+    ): Set<Stroke> {
+        val prev = previousPoint
+        previousPoint = MutableVec(currentX, currentY)
+
+        if (prev == null) return currentStrokes
+
+        val segment = MutableSegment(prev, MutableVec(currentX, currentY))
+        val parallelogram = MutableParallelogram()
+            .populateFromSegmentAndPadding(segment, eraserPadding)
+
+        val strokesToRemove = currentStrokes.filter { stroke ->
+            stroke.shape.intersects(parallelogram, AffineTransform.IDENTITY)
+        }
+
+        return if (strokesToRemove.isNotEmpty()) {
+            currentStrokes - strokesToRemove.toSet()
+        } else {
+            currentStrokes.toSet()
         }
     }
 }

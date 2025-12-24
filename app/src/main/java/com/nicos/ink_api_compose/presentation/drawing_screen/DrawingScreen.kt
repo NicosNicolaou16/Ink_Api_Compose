@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -63,6 +65,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlin.collections.plus
 import androidx.core.graphics.createBitmap
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.ink.authoring.compose.InProgressStrokes
 import androidx.ink.geometry.ImmutableBox
 import androidx.ink.geometry.Vec
 import com.nicos.ink_api_compose.utils.MyLifecycle
@@ -116,9 +119,26 @@ fun DrawingSurface(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .weight(1f)/*.pointerInput(Unit) {
+                    detectDragGestures(
+                        onDragStart = { drawingViewModel.startErase() },
+                        onDragEnd = { drawingViewModel.endErase() }
+                    ) { change, _ ->
+                        drawingViewModel.erase(change.position.x, change.position.y)
+                        change.consume()
+                    }
+                }*/
         ) {
-            AndroidView(
+            InProgressStrokes(
+                defaultBrush = defaultBrush,
+                nextBrush = {
+                    defaultBrush.copyWithColorIntArgb(colorIntArgb = selectedColor.intValue)
+                },
+                onStrokesFinished = { strokes -> // Handle newly finished strokes from this composable
+                    state.finishedStrokesState.value += strokes
+                }
+            )
+            /*AndroidView(
                 modifier = Modifier.fillMaxSize(),
                 factory = { context ->
                     val rootView = FrameLayout(context)
@@ -210,7 +230,7 @@ fun DrawingSurface(
                     rootView.addView(inProgressStrokesView)
                     rootView
                 },
-            )
+            )*/
 
             Canvas(modifier = Modifier
                 .fillMaxSize()
@@ -268,29 +288,29 @@ fun DrawingSurface(
                 selectedColor = selectedColor,
                 color = Red
             ) {
-                defaultBrush =
-                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color.Red.toArgb())
+                /*defaultBrush =
+                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color.Red.toArgb())*/
             }
             SelectedColor(
                 selectedColor = selectedColor,
                 color = Blue
             ) {
-                defaultBrush =
-                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color.Blue.toArgb())
+                /*defaultBrush =
+                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color.Blue.toArgb())*/
             }
             SelectedColor(
                 selectedColor = selectedColor,
                 color = Pink
             ) {
-                defaultBrush =
-                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color(Pink.value).toArgb())
+                /*defaultBrush =
+                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color(Pink.value).toArgb())*/
             }
             SelectedColor(
                 selectedColor = selectedColor,
                 color = Green
             ) {
-                defaultBrush =
-                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color.Green.toArgb())
+                /*defaultBrush =
+                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color.Green.toArgb())*/
             }
         }
     }

@@ -81,6 +81,7 @@ dependencies {
     implementation(libs.androidx.input.motionprediction)
     // Hilt
     implementation(libs.dagger.android)
+    implementation(libs.androidx.ink.authoring.compose)
     ksp(libs.dagger.compiler)
     ksp(libs.hilt.compiler)
     //Room Database
