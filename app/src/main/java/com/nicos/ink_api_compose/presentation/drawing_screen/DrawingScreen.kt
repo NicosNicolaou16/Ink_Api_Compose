@@ -7,6 +7,7 @@ import android.graphics.Picture
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.createBitmap
@@ -87,6 +89,7 @@ fun DrawingSurface(
     var showDialog by remember { mutableStateOf(false) }
     val selectedColor = remember { mutableIntStateOf(Color.Red.toArgb()) }
     val canvasStrokeRenderer = CanvasStrokeRenderer.create()
+    var isEraseMode by remember { mutableStateOf(false) }
     val defaultBrush = Brush.createWithColorIntArgb(
         family = StockBrushes.pressurePen(),
         colorIntArgb = Color.Red.toArgb(),
@@ -109,7 +112,8 @@ fun DrawingSurface(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)/*.pointerInput(Unit) {
+                .weight(1f)
+                .pointerInput(Unit) {
                     detectDragGestures(
                         onDragStart = { drawingViewModel.startErase() },
                         onDragEnd = { drawingViewModel.endErase() }
@@ -117,15 +121,16 @@ fun DrawingSurface(
                         drawingViewModel.erase(change.position.x, change.position.y)
                         change.consume()
                     }
-                }*/
+                }
         ) {
-            InProgressStrokes(
-                defaultBrush = defaultBrush,
-                nextBrush = {
-                    defaultBrush.copyWithColorIntArgb(colorIntArgb = selectedColor.intValue)
-                },
-                onStrokesFinished = { strokes -> state.finishedStrokesState.value += strokes }
-            )
+            if (!isEraseMode)
+                InProgressStrokes(
+                    defaultBrush = defaultBrush,
+                    nextBrush = {
+                        defaultBrush.copyWithColorIntArgb(colorIntArgb = selectedColor.intValue)
+                    },
+                    onStrokesFinished = { strokes -> state.finishedStrokesState.value += strokes }
+                )
 
             Canvas(
                 modifier = Modifier
@@ -147,7 +152,6 @@ fun DrawingSurface(
             }
         }
 
-        var isEraseMode by remember { mutableStateOf(false) } // <-- ADD THIS
         Row(
             modifier = Modifier
                 .height(height = 200.dp)
