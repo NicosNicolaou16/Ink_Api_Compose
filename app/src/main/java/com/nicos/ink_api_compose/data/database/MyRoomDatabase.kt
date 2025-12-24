@@ -22,7 +22,7 @@ abstract class MyRoomDatabase : RoomDatabase() {
     internal lateinit var myDatabase: MyRoomDatabase
 
     companion object {
-        private const val DB_NAME = "DB_NAME"
+        private const val DB_NAME = "ink_database"
         private val LOCK = Any()
 
         operator fun invoke(context: Context) = buildDatabase(context)
