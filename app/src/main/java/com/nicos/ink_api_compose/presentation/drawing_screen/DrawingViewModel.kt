@@ -152,12 +152,21 @@ class DrawingViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Sets the bitmap state to null.
+     * */
     fun setBitmapAsNull() {
         state = state.copy(
             bitmap = null
         )
     }
 
+    /**
+     * Records a canvas to a bitmap.
+     * @param strokes: List of strokes to render
+     * @param canvasStrokeRenderer: CanvasStrokeRenderer to use for rendering
+     * @param canvasTransform: Optional transform to apply to the canvas
+     * */
     suspend fun recordCanvasToBitmap(
         strokes: List<Stroke>,
         canvasStrokeRenderer: CanvasStrokeRenderer,
