@@ -52,6 +52,9 @@ class DrawingViewModel @Inject constructor(
         loadDrawing()
     }
 
+    /**
+     * Loads the drawing from the database.
+     * */
     private fun loadDrawing() {
         viewModelScope.launch(Dispatchers.Main) {
             viewModelScope.async(
@@ -70,6 +73,9 @@ class DrawingViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Saves the drawing to the database.
+     * */
     fun saveDrawing() {
         viewModelScope.launch(Dispatchers.IO) {
             if (state.finishedStrokesState.value.isEmpty()) return@launch
@@ -85,15 +91,26 @@ class DrawingViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Starts erasing the previous point.
+     * */
     fun startErase() {
         previousPoint = null
     }
 
+    /**
+     * Erases the previous point from the finishedStrokesState.
+     * */
     fun endErase() {
         previousPoint = null
         viewModelScope.launch { saveDrawing() }
     }
 
+    /**
+     * Erases a single point from the finishedStrokesState.
+     * @param x: Float x coordinate of the point to erase
+     * @param y: Float y coordinate of the point to erase
+     * */
     fun erase(x: Float, y: Float) {
         val strokesBeforeErase = state.finishedStrokesState.value
         val strokesAfterErase = eraseIntersectingStrokes(
@@ -107,6 +124,12 @@ class DrawingViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Erases all strokes that intersect with the current point.
+     * @param currentX: Float x coordinate of the current point
+     * @param currentY: Float y coordinate of the current point
+     * @param currentStrokes: Set of strokes to erase from
+     * */
     @SuppressLint("RestrictedApi")
     private fun eraseIntersectingStrokes(
         currentX: Float,
@@ -133,6 +156,10 @@ class DrawingViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Erases all strokes that intersect with the eraserBox.
+     * @param finishedStrokesState: MutableState<Set<Stroke>> to erase from
+     * */
     fun eraseWholeStrokes(
         finishedStrokesState: MutableState<Set<Stroke>>,
     ) {
