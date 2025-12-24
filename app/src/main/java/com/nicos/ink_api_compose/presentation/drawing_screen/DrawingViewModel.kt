@@ -162,36 +162,27 @@ class DrawingViewModel @Inject constructor(
         strokes: List<Stroke>,
         canvasStrokeRenderer: CanvasStrokeRenderer,
         canvasTransform: Matrix? = null, // Optional transform
-    ) {
-        // Step 1: Perform all rendering on the Main thread to respect UI threading rules.
-        val picture = withContext(Dispatchers.IO) {
-            val pic = Picture()
-            // Begin recording on a canvas associated with the Picture
-            val canvas = pic.beginRecording(2000, 2000)
+    ) = withContext(Dispatchers.Default) {
+        val picture = Picture()
+        val canvas = picture.beginRecording(
+            2000,
+            2000
+        )
 
-            // Apply the transform if it exists
-            canvas.concat(canvasTransform)
+        // Apply the transform before rendering
+        canvas.concat(canvasTransform)
 
-            // Render each stroke into the recording canvas. This is a UI operation.
-            strokes.forEach { stroke ->
-                canvasStrokeRenderer.draw(
-                    stroke = stroke,
-                    canvas = canvas,
-                    strokeToScreenTransform = canvasTransform ?: Matrix()
-                )
-            }
-
-            // Finish recording the drawing commands
-            pic.endRecording()
-            pic // Return the populated Picture object
+        // Render each stroke into the recording canvas
+        strokes.forEach { stroke ->
+            canvasStrokeRenderer.draw(
+                stroke = stroke,
+                canvas = canvas,
+                strokeToScreenTransform = canvasTransform ?: Matrix()
+            )
         }
 
-        // Step 2: Create the final Bitmap on a background thread. This is the heavy operation.
-        val bitmap = withContext(Dispatchers.Default) {
-            Bitmap.createBitmap(picture)
-        }
-
-        // Step 3: Update the Compose state back on the Main thread.
+        picture.endRecording()
+        val bitmap = Bitmap.createBitmap(picture)
         withContext(Dispatchers.Main) {
             state = state.copy(
                 bitmap = bitmap
