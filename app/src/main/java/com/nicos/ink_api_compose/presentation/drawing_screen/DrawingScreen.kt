@@ -12,13 +12,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -143,23 +147,31 @@ fun DrawingSurface(
             }
         }
 
+        var isEraseMode by remember { mutableStateOf(false) } // <-- ADD THIS
         Row(
             modifier = Modifier
                 .height(height = 200.dp)
                 .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(fraction = 0.7f)
+                //.fillMaxWidth(fraction = 0.7f)
                 .safeDrawingPadding(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column {
-                EraseDrawerButton(
-                    eraseDrawer = {
-                        eraseWholeStrokes(
-                            finishedStrokesState = state.finishedStrokesState
-                        )
-                    }
-                )
+                Row {
+                    EraseDrawerButton(
+                        eraseDrawer = {
+                            eraseWholeStrokes(
+                                finishedStrokesState = state.finishedStrokesState
+                            )
+                        }
+                    )
+                    Spacer(modifier = Modifier.padding(end = 5.dp))
+                    EraserToggleButton(
+                        isEraseMode = isEraseMode,
+                        onClick = { isEraseMode = !isEraseMode }
+                    )
+                }
                 CreateBitmapFromStrokeButton(
                     bitmap = {
                         scope.launch {
@@ -198,6 +210,25 @@ fun DrawingSurface(
 }
 
 @Composable
+private fun EraserToggleButton(
+    isEraseMode: Boolean,
+    onClick: () -> Unit,
+) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isEraseMode) androidx.compose.ui.graphics.Color.Gray else androidx.compose.ui.graphics.Color.LightGray
+        )
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.outline_delete_24), // Replace with your eraser icon
+            contentDescription = "Toggle Eraser",
+        )
+    }
+}
+
+
+@Composable
 fun ShowBitmapDialog(
     bitmap: Bitmap?,
     showDialog: Boolean,
@@ -228,6 +259,7 @@ fun ShowBitmapDialog(
 @Composable
 private fun CreateBitmapFromStrokeButton(bitmap: () -> Unit) {
     Button(
+        modifier = Modifier.width(width = 150.dp),
         onClick = {
             bitmap()
         },
