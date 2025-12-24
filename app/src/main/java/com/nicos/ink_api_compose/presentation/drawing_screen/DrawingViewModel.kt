@@ -7,7 +7,6 @@ import android.graphics.Picture
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.ink.geometry.AffineTransform
 import androidx.ink.geometry.Intersection.intersects
 import androidx.ink.geometry.MutableParallelogram
