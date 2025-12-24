@@ -120,9 +120,7 @@ fun DrawingSurface(
                 nextBrush = {
                     defaultBrush.copyWithColorIntArgb(colorIntArgb = selectedColor.intValue)
                 },
-                onStrokesFinished = { strokes -> // Handle newly finished strokes from this composable
-                    state.finishedStrokesState.value += strokes
-                }
+                onStrokesFinished = { strokes -> state.finishedStrokesState.value += strokes }
             )
 
             Canvas(
