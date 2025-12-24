@@ -232,9 +232,11 @@ fun DrawingSurface(
                 },
             )*/
 
-            Canvas(modifier = Modifier
-                .fillMaxSize()
-                .clipToBounds()) {
+            Canvas(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clipToBounds()
+            ) {
                 drawRect(color = androidx.compose.ui.graphics.Color.Transparent)
                 val canvasTransform = Matrix()
                 drawContext.canvas.nativeCanvas.concat(canvasTransform)
@@ -287,31 +289,19 @@ fun DrawingSurface(
             SelectedColor(
                 selectedColor = selectedColor,
                 color = Red
-            ) {
-                /*defaultBrush =
-                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color.Red.toArgb())*/
-            }
+            )
             SelectedColor(
                 selectedColor = selectedColor,
                 color = Blue
-            ) {
-                /*defaultBrush =
-                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color.Blue.toArgb())*/
-            }
+            )
             SelectedColor(
                 selectedColor = selectedColor,
                 color = Pink
-            ) {
-                /*defaultBrush =
-                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color(Pink.value).toArgb())*/
-            }
+            )
             SelectedColor(
                 selectedColor = selectedColor,
                 color = Green
-            ) {
-                /*defaultBrush =
-                    defaultBrush.copyWithColorIntArgb(colorIntArgb = Color.Green.toArgb())*/
-            }
+            )
         }
     }
 }
@@ -402,7 +392,6 @@ suspend fun recordCanvasToBitmap(
 private fun SelectedColor(
     selectedColor: MutableIntState,
     color: androidx.compose.ui.graphics.Color,
-    selectingColor: () -> Unit
 ) {
 
     Image(
@@ -418,7 +407,6 @@ private fun SelectedColor(
             )
             .clickable {
                 selectedColor.intValue = color.toArgb()
-                selectingColor()
             })
 }
 
