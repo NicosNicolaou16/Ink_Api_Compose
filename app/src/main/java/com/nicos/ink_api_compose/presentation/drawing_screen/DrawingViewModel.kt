@@ -116,11 +116,10 @@ class DrawingViewModel @Inject constructor(
         val strokesAfterErase = eraseIntersectingStrokes(
             x, y, strokesBeforeErase
         )
-        state.finishedStrokesState.value = strokesAfterErase
         if (strokesAfterErase.size != strokesBeforeErase.size) {
-            state = state.copy(
-                finishedStrokesState = state.finishedStrokesState
-            )
+            Snapshot.withMutableSnapshot {
+                state.finishedStrokesState.value = strokesAfterErase
+            }
         }
     }
 
