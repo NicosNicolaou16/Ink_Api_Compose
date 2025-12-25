@@ -37,7 +37,7 @@ I installed the app on their tablet, and they started drawing right away.
 
 The [Ink API](https://developer.android.com/develop/ui/compose/touch-input/stylus-input/about-ink-api?utm_source=android-studio-app&utm_medium=app)
 enables smooth, low-latency freehand drawing in Android apps by simplifying stylus and
-pointer input handling and graphics rendering.
+pointer input handling and graphics rendering. <br />
 The programming language is the [Kotlin](https://kotlinlang.org/docs/getting-started.html), it is a
 modern, JVM-based programming language that is concise, safe, and interoperable with Java. <br />
 [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) is used for asynchronous
