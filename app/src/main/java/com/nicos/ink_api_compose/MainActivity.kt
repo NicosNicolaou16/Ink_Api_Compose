@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.nicos.ink_api_compose.presentation.drawing_screen.DrawingSurface
+import com.nicos.ink_api_compose.presentation.drawing_screen.DrawingSurfaceRoot
 import com.nicos.ink_api_compose.ui.theme.Ink_Api_ComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Ink_Api_ComposeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    DrawingSurface(
+                    DrawingSurfaceRoot(
                         innerPadding = innerPadding,
                     )
                 }
