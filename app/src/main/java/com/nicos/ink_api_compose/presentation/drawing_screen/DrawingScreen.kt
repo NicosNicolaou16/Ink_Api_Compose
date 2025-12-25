@@ -23,6 +23,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
@@ -41,6 +42,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.ink.authoring.compose.InProgressStrokes
@@ -52,10 +54,22 @@ import androidx.ink.rendering.android.canvas.CanvasStrokeRenderer
 import com.nicos.ink_api_compose.R
 import com.nicos.ink_api_compose.ui.theme.Blue
 import com.nicos.ink_api_compose.ui.theme.Green
+import com.nicos.ink_api_compose.ui.theme.Ink_Api_ComposeTheme
 import com.nicos.ink_api_compose.ui.theme.Pink
 import com.nicos.ink_api_compose.ui.theme.Red
 import com.nicos.ink_api_compose.utils.MyLifecycle
 import kotlinx.coroutines.launch
+
+@Composable
+fun DrawingSurfaceRoot(
+    innerPadding: PaddingValues,
+) {
+    Scaffold { panding ->
+        DrawingSurface(
+            innerPadding = innerPadding,
+        )
+    }
+}
 
 @SuppressLint("ClickableViewAccessibility", "RestrictedApi")
 @Composable
@@ -341,4 +355,3 @@ private fun SelectedColor(
                 selectedColor.intValue = color.toArgb()
             })
 }
-
