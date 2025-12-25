@@ -92,6 +92,7 @@ Gradle version: 8.13.2 <br />
 
 - https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-state-preservation <br />
 - https://github.com/android/cahier <br />
+- https://issuetracker.google.com/issues/468458741 <br />
 - https://github.com/android/cahier/blob/main/app/src/main/java/com/example/cahier/data/OfflineNotesRepository.kt <br />
 - https://github.com/android/cahier/blob/main/app/src/main/java/com/example/cahier/ui/Converters.kt <br />
 - https://developer.android.com/reference/kotlin/androidx/ink/storage/package-summary#(androidx.ink.strokes.StrokeInputBatch).encode(java.io.OutputStream) <br />
