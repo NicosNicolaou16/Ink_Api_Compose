@@ -67,7 +67,7 @@ fun DrawingSurface(
     var showDialog by remember { mutableStateOf(false) }
     val selectedColor = remember { mutableIntStateOf(Color.Red.toArgb()) }
     val canvasStrokeRenderer = CanvasStrokeRenderer.create()
-    var isEraseMode by remember { mutableStateOf(false) }
+    var isEraseModeEnable by remember { mutableStateOf(false) }
     val defaultBrush = Brush.createWithColorIntArgb(
         family = StockBrushes.pressurePen(),
         colorIntArgb = Color.Red.toArgb(),
@@ -104,7 +104,7 @@ fun DrawingSurface(
                     }
                 }
         ) {
-            if (!isEraseMode)
+            if (!isEraseModeEnable)
                 InProgressStrokes(
                     defaultBrush = defaultBrush,
                     nextBrush = {
@@ -136,14 +136,14 @@ fun DrawingSurface(
         BottomView(
             state = state,
             drawingViewModel = drawingViewModel,
-            isEraseMode = isEraseMode,
+            isEraseMode = isEraseModeEnable,
             selectedColor = selectedColor,
             canvasStrokeRenderer,
             onDrawingEnable = {
-                isEraseMode = false
+                isEraseModeEnable = false
             },
             onPartiallyEraseEnable = {
-                isEraseMode = true
+                isEraseModeEnable = true
             },
         )
     }
