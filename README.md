@@ -8,7 +8,7 @@ bitmap and to save and load the stroke using a Room database.
 
 <p align="left">
   <a title="simulator_image"><img src="examples/Screenshot_20251226_001307.png" height="500" width="200"></a>
-  <a title="simulator_image"><img src="examples/Screenshot_20250509_222005.png" height="500" width="200"></a>
+  <a title="simulator_image"><img src="examples/Screenshot_20251226_001257.png" height="500" width="200"></a>
   <a title="simulator_image"><img src="examples/example_gif2.gif" height="500" width="200"></a>
 </p>
 
