@@ -139,8 +139,11 @@ fun DrawingSurface(
             isEraseMode = isEraseMode,
             selectedColor = selectedColor,
             canvasStrokeRenderer,
-            partiallyErase = {
-                isEraseMode = !isEraseMode
+            onDrawingEnable = {
+                isEraseMode = false
+            },
+            onPartiallyEraseEnable = {
+                isEraseMode = true
             },
         )
     }
@@ -153,7 +156,8 @@ private fun BottomView(
     isEraseMode: Boolean,
     selectedColor: MutableIntState,
     canvasStrokeRenderer: CanvasStrokeRenderer,
-    partiallyErase: () -> Unit,
+    onDrawingEnable: () -> Unit,
+    onPartiallyEraseEnable: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -170,12 +174,12 @@ private fun BottomView(
                 Row {
                     DrawingButton(
                         isEraseMode = isEraseMode,
-                        onClick = partiallyErase
+                        onClick = onDrawingEnable
                     )
                     Spacer(modifier = Modifier.padding(end = 5.dp))
-                    EraserPartiallyToggleButton(
+                    EraserPartiallyButton(
                         isEraseMode = isEraseMode,
-                        onClick = partiallyErase
+                        onClick = onPartiallyEraseEnable
                     )
                 }
                 Row {
@@ -240,7 +244,7 @@ private fun DrawingButton(
 }
 
 @Composable
-private fun EraserPartiallyToggleButton(
+private fun EraserPartiallyButton(
     isEraseMode: Boolean,
     onClick: () -> Unit,
 ) {
