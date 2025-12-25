@@ -230,7 +230,7 @@ private fun DrawingButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isEraseMode) androidx.compose.ui.graphics.Color.Unspecified else androidx.compose.ui.graphics.Color.Gray
+            containerColor = if (!isEraseMode) androidx.compose.ui.graphics.Color.Unspecified else androidx.compose.ui.graphics.Color.Gray
         )
     ) {
         Icon(
@@ -248,7 +248,7 @@ private fun EraserPartiallyToggleButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (!isEraseMode) androidx.compose.ui.graphics.Color.Unspecified else androidx.compose.ui.graphics.Color.Gray
+            containerColor = if (isEraseMode) androidx.compose.ui.graphics.Color.Unspecified else androidx.compose.ui.graphics.Color.Gray
         )
     ) {
         Icon(
