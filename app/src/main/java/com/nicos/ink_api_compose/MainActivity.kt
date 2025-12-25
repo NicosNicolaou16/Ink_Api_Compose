@@ -22,11 +22,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             Ink_Api_ComposeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val eraserBox = ImmutableBox.fromCenterAndDimensions(
-                        Vec.ORIGIN,
-                        Float.MAX_VALUE,
-                        Float.MAX_VALUE
-                    )
                     DrawingSurface(
                         innerPadding = innerPadding,
                     )
