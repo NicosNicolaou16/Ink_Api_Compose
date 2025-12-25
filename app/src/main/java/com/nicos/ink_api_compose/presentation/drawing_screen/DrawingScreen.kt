@@ -169,6 +169,17 @@ private fun BottomView(
         ) {
             Column {
                 Row {
+                    DrawingButton(
+                        isEraseMode = isEraseMode,
+                        onClick = partiallyErase
+                    )
+                    Spacer(modifier = Modifier.padding(end = 5.dp))
+                    EraserPartiallyToggleButton(
+                        isEraseMode = isEraseMode,
+                        onClick = partiallyErase
+                    )
+                }
+                Row {
                     EraseDrawerButton(
                         eraseDrawer = {
                             drawingViewModel.eraseWholeStrokes(
@@ -177,23 +188,19 @@ private fun BottomView(
                         }
                     )
                     Spacer(modifier = Modifier.padding(end = 5.dp))
-                    EraserPartiallyToggleButton(
-                        isEraseMode = isEraseMode,
-                        onClick = partiallyErase
-                    )
-                }
-                CreateBitmapFromStrokeButton(
-                    bitmap = {
-                        scope.launch {
-                            if (state.finishedStrokesState.value.isNotEmpty()) {
-                                drawingViewModel.recordCanvasToBitmap(
-                                    strokes = state.finishedStrokesState.value.toList(),
-                                    canvasStrokeRenderer = canvasStrokeRenderer,
-                                    canvasTransform = Matrix(),
-                                )
+                    CreateBitmapFromStrokeButton(
+                        bitmap = {
+                            scope.launch {
+                                if (state.finishedStrokesState.value.isNotEmpty()) {
+                                    drawingViewModel.recordCanvasToBitmap(
+                                        strokes = state.finishedStrokesState.value.toList(),
+                                        canvasStrokeRenderer = canvasStrokeRenderer,
+                                        canvasTransform = Matrix(),
+                                    )
+                                }
                             }
-                        }
-                    })
+                        })
+                }
             }
             SelectedColor(
                 selectedColor = selectedColor,
@@ -216,7 +223,7 @@ private fun BottomView(
 }
 
 @Composable
-private fun EraserPartiallyToggleButton(
+private fun DrawingButton(
     isEraseMode: Boolean,
     onClick: () -> Unit,
 ) {
@@ -227,7 +234,25 @@ private fun EraserPartiallyToggleButton(
         )
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.outline_delete_24), // Replace with your eraser icon
+            painter = painterResource(id = R.drawable.outline_draw_24),
+            contentDescription = "Toggle Eraser",
+        )
+    }
+}
+
+@Composable
+private fun EraserPartiallyToggleButton(
+    isEraseMode: Boolean,
+    onClick: () -> Unit,
+) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (!isEraseMode) androidx.compose.ui.graphics.Color.Unspecified else androidx.compose.ui.graphics.Color.Gray
+        )
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.outline_delete_24),
             contentDescription = "Toggle Eraser",
         )
     }
@@ -265,7 +290,6 @@ fun ShowBitmapDialog(
 @Composable
 private fun CreateBitmapFromStrokeButton(bitmap: () -> Unit) {
     Button(
-        modifier = Modifier.width(width = 150.dp),
         onClick = {
             bitmap()
         },
