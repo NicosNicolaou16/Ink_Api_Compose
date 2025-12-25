@@ -23,7 +23,7 @@ I installed the app on their tablet, and they started drawing right away.
 ## Here’s a list of features to highlight for the app
 
 - Color Selection: Allows users to choose from a variety of colors for drawing.
-- Erase Tool: Provides the option to erase any part of the drawing.
+- Erase Tool: Provides the option to erase part of the drawing or any part of the drawing.
 - Tablet Compatibility: Works seamlessly on tablets for an enhanced drawing experience.
 - Convert the stroke to a bitmap and display it in a dialog.
 - An example of how to save a stroke to the Room database and load it from the database.
