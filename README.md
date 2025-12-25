@@ -1,7 +1,8 @@
 # Ink API Compose
 
 This open-source project tests the new Google Ink API with an example for drawing, offering options
-to select colors and erase the drawing. It also includes functionality to convert the stroke to a
+to select colors, erase part of the drawing or clear the entire drawing. It also includes
+functionality to convert the stroke to a
 bitmap and to save and load the stroke using a Room database.
 
 ## Examples
