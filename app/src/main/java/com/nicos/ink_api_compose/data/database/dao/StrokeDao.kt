@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.nicos.ink_api_compose.data.database.entities.StrokeEntity
 
 @Dao
@@ -15,6 +16,7 @@ interface StrokeDao {
     @Delete
     suspend fun deleteStroke(stroke: StrokeEntity)
 
+    @Transaction
     @Query("SELECT * FROM strokeentity WHERE id = 1")
     suspend fun getStroke(): StrokeEntity?
 }

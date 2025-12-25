@@ -42,6 +42,7 @@ ink-nativeloader = { group = "androidx.ink", name = "ink-nativeloader", version.
 ink-rendering = { group = "androidx.ink", name = "ink-rendering", version.ref = "inkVersion" }
 ink-strokes = { group = "androidx.ink", name = "ink-strokes", version.ref = "inkVersion" }
 androidx-ink-storage = { module = "androidx.ink:ink-storage", version.ref = "inkVersion" }
+androidx-ink-authoring-compose = { group = "androidx.ink", name = "ink-authoring-compose", version.ref = "inkVersion" }
 # Motion Prediction
 androidx-input-motionprediction = { group = "androidx.input", name = "input-motionprediction", version.ref = "inputMotionprediction" }
 # Room Database

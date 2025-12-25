@@ -1,15 +1,16 @@
 # Ink API Compose
 
 This open-source project tests the new Google Ink API with an example for drawing, offering options
-to select colors and erase the drawing. It also includes functionality to convert the stroke to a
+to select colors, erase part of the drawing or clear the entire drawing. It also includes
+functionality to convert the stroke to a
 bitmap and to save and load the stroke using a Room database.
 
 ## Examples
 
 <p align="left">
-  <a title="simulator_image"><img src="examples/Screenshot_20250509_221935.png" height="500" width="200"></a>
-  <a title="simulator_image"><img src="examples/Screenshot_20250509_222005.png" height="500" width="200"></a>
-  <a title="simulator_image"><img src="examples/example_gif2.gif" height="500" width="200"></a>
+  <a title="simulator_image"><img src="examples/Screenshot_20251226_001307.png" height="500" width="200"></a>
+  <a title="simulator_image"><img src="examples/Screenshot_20251226_001257.png" height="500" width="200"></a>
+  <a title="simulator_image"><img src="examples/example_gif3.gif" height="500" width="200"></a>
 </p>
 
 ## A Brief History Behind This Repository :smiley:
@@ -22,7 +23,7 @@ I installed the app on their tablet, and they started drawing right away.
 ## Here’s a list of features to highlight for the app
 
 - Color Selection: Allows users to choose from a variety of colors for drawing.
-- Erase Tool: Provides the option to erase any part of the drawing.
+- Erase Tool: Provides the option to erase part of the drawing or any part of the drawing.
 - Tablet Compatibility: Works seamlessly on tablets for an enhanced drawing experience.
 - Convert the stroke to a bitmap and display it in a dialog.
 - An example of how to save a stroke to the Room database and load it from the database.
@@ -34,6 +35,9 @@ I installed the app on their tablet, and they started drawing right away.
 
 # The Project Contain the following technologies
 
+The [Ink API](https://developer.android.com/develop/ui/compose/touch-input/stylus-input/about-ink-api?utm_source=android-studio-app&utm_medium=app)
+enables smooth, low-latency freehand drawing in Android apps by simplifying stylus and
+pointer input handling and graphics rendering. <br />
 The programming language is the [Kotlin](https://kotlinlang.org/docs/getting-started.html), it is a
 modern, JVM-based programming language that is concise, safe, and interoperable with Java. <br />
 [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) is used for asynchronous
@@ -88,6 +92,7 @@ Gradle version: 8.13.2 <br />
 
 - https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-state-preservation <br />
 - https://github.com/android/cahier <br />
+- https://issuetracker.google.com/issues/468458741 <br />
 - https://github.com/android/cahier/blob/main/app/src/main/java/com/example/cahier/data/OfflineNotesRepository.kt <br />
 - https://github.com/android/cahier/blob/main/app/src/main/java/com/example/cahier/ui/Converters.kt <br />
 - https://developer.android.com/reference/kotlin/androidx/ink/storage/package-summary#(androidx.ink.strokes.StrokeInputBatch).encode(java.io.OutputStream) <br />

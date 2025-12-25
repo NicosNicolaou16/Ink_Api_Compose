@@ -26,16 +26,24 @@ fun MyLifecycle(
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_START) {
-                currentOnStart()
-            } else if (event == Lifecycle.Event.ON_STOP) {
-                currentOnStop()
-            } else if (event == Lifecycle.Event.ON_DESTROY) {
-                currentOnDestroy()
-            } else if (event == Lifecycle.Event.ON_PAUSE) {
-                currentOnPause()
-            } else if (event == Lifecycle.Event.ON_RESUME) {
-                currentOnResume()
+            when (event) {
+                Lifecycle.Event.ON_START -> {
+                    currentOnStart()
+                }
+                Lifecycle.Event.ON_STOP -> {
+                    currentOnStop()
+                }
+                Lifecycle.Event.ON_DESTROY -> {
+                    currentOnDestroy()
+                }
+                Lifecycle.Event.ON_PAUSE -> {
+                    currentOnPause()
+                }
+                Lifecycle.Event.ON_RESUME -> {
+                    currentOnResume()
+                }
+
+                else -> Unit
             }
         }
 
