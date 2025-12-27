@@ -48,8 +48,8 @@ class StrokeConverters {
     }
 
 
-    fun deserializeEntityToStroke(entity: StrokeEntity): Set<Stroke> {
-        val serializedBrush =
+    fun deserializeEntityToStroke(entity: StrokeEntity): StrokesAndSelectedLastBrushesDeserialize {
+        val lastSerializedBrush =
             SerializedBrush(
                 size = entity.brushSize,
                 color = entity.brushColor,
@@ -57,16 +57,23 @@ class StrokeConverters {
                 stockBrush = entity.stockBrush,
             )
 
-        val decodedSerializedInputs = Json.decodeFromString<List<ByteArray>>(entity.strokeInputs)
+        val decodedSerializedInputs =
+            Json.decodeFromString<List<StrokesAndSelectedLastBrushesSerialize>>(entity.strokeInputs)
         val inputsStroke = decodedSerializedInputs.map {
-            ByteArrayInputStream(it).use { inputStream ->
-                StrokeInputBatch.decode(inputStream)
-            }
+            val serializedBrush = deserializeBrush(it.serializedBrush)
+            val strokeByteArray =
+                ByteArrayInputStream(it.strokeByteArray).use { inputStream ->
+                    StrokeInputBatch.decode(inputStream)
+                }
+            Stroke(serializedBrush, strokeByteArray)
         }
 
-        val brush = deserializeBrush(serializedBrush)
+        val lastBrushes = deserializeBrush(lastSerializedBrush)
 
-        return inputsStroke.map { Stroke(brush = brush, inputs = it) }.toSet()
+        return StrokesAndSelectedLastBrushesDeserialize(
+            lastBrushes = lastBrushes,
+            strokes = inputsStroke.toSet(),
+        )
     }
 
     private fun serializeBrush(brush: Brush): SerializedBrush {
