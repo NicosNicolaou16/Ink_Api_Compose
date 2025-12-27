@@ -26,25 +26,30 @@ class StrokeConverters {
     }
 
     fun serializeStrokeToEntity(stroke: Set<Stroke>): StrokeEntity {
-        val serializedBrush = serializeBrush(stroke.last().brush)
+        val lastSerializedBrush = serializeBrush(stroke.last().brush)
         val encodedSerializedInputs = stroke.map {
-            ByteArrayOutputStream().use { outputStream ->
+            val serializedBrush = serializeBrush(it.brush)
+            val strokeByteArray = ByteArrayOutputStream().use { outputStream ->
                 it.inputs.encode(outputStream)
                 outputStream.toByteArray()
             }
+            StrokesAndSelectedLastBrushesSerialize(
+                strokeByteArray = strokeByteArray,
+                serializedBrush = serializedBrush
+            )
         }
         return StrokeEntity(
-            brushSize = serializedBrush.size,
-            brushColor = serializedBrush.color,
-            brushEpsilon = serializedBrush.epsilon,
-            stockBrush = serializedBrush.stockBrush,
+            brushSize = lastSerializedBrush.size,
+            brushColor = lastSerializedBrush.color,
+            brushEpsilon = lastSerializedBrush.epsilon,
+            stockBrush = lastSerializedBrush.stockBrush,
             strokeInputs = Json.encodeToString(encodedSerializedInputs),
         )
     }
 
 
-    fun deserializeEntityToStroke(entity: StrokeEntity): Set<Stroke> {
-        val serializedBrush =
+    fun deserializeEntityToStroke(entity: StrokeEntity): StrokesAndSelectedLastBrushesDeserialize {
+        val lastSerializedBrush =
             SerializedBrush(
                 size = entity.brushSize,
                 color = entity.brushColor,
@@ -52,16 +57,23 @@ class StrokeConverters {
                 stockBrush = entity.stockBrush,
             )
 
-        val decodedSerializedInputs = Json.decodeFromString<List<ByteArray>>(entity.strokeInputs)
+        val decodedSerializedInputs =
+            Json.decodeFromString<List<StrokesAndSelectedLastBrushesSerialize>>(entity.strokeInputs)
         val inputsStroke = decodedSerializedInputs.map {
-            ByteArrayInputStream(it).use { inputStream ->
-                StrokeInputBatch.decode(inputStream)
-            }
+            val serializedBrush = deserializeBrush(it.serializedBrush)
+            val strokeByteArray =
+                ByteArrayInputStream(it.strokeByteArray).use { inputStream ->
+                    StrokeInputBatch.decode(inputStream)
+                }
+            Stroke(serializedBrush, strokeByteArray)
         }
 
-        val brush = deserializeBrush(serializedBrush)
+        val lastBrushes = deserializeBrush(lastSerializedBrush)
 
-        return inputsStroke.map { Stroke(brush = brush, inputs = it) }.toSet()
+        return StrokesAndSelectedLastBrushesDeserialize(
+            lastBrushes = lastBrushes,
+            strokes = inputsStroke.toSet(),
+        )
     }
 
     private fun serializeBrush(brush: Brush): SerializedBrush {

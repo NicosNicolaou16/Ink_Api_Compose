@@ -62,9 +62,10 @@ class DrawingViewModel @Inject constructor(
             ) {
                 val strokeEntity = strokeRepository.getStroke() ?: return@async
                 // Convert the strokeEntity to a stroke
-                val strokes = strokeConverters.deserializeEntityToStroke(strokeEntity)
+                val strokesAndSelectedLastBrushesDeserialize =
+                    strokeConverters.deserializeEntityToStroke(strokeEntity)
                 // Add the stroke to the finishedStrokesState
-                state.finishedStrokesState.value = strokes
+                state.finishedStrokesState.value = strokesAndSelectedLastBrushesDeserialize.strokes
 
             }.await()
             state = state.copy(
