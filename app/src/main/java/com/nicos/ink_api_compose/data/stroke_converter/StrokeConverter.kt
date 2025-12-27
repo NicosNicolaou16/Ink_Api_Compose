@@ -26,18 +26,23 @@ class StrokeConverters {
     }
 
     fun serializeStrokeToEntity(stroke: Set<Stroke>): StrokeEntity {
-        val serializedBrush = serializeBrush(stroke.last().brush)
+        val lastSerializedBrush = serializeBrush(stroke.last().brush)
         val encodedSerializedInputs = stroke.map {
-            ByteArrayOutputStream().use { outputStream ->
+            val serializedBrush = serializeBrush(it.brush)
+            val strokeByteArray = ByteArrayOutputStream().use { outputStream ->
                 it.inputs.encode(outputStream)
                 outputStream.toByteArray()
             }
+            StrokesAndSelectedLastBrushesSerialize(
+                strokeByteArray = strokeByteArray,
+                serializedBrush = serializedBrush
+            )
         }
         return StrokeEntity(
-            brushSize = serializedBrush.size,
-            brushColor = serializedBrush.color,
-            brushEpsilon = serializedBrush.epsilon,
-            stockBrush = serializedBrush.stockBrush,
+            brushSize = lastSerializedBrush.size,
+            brushColor = lastSerializedBrush.color,
+            brushEpsilon = lastSerializedBrush.epsilon,
+            stockBrush = lastSerializedBrush.stockBrush,
             strokeInputs = Json.encodeToString(encodedSerializedInputs),
         )
     }
