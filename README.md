@@ -71,6 +71,7 @@ This project is built with **[Kotlin](https://kotlinlang.org/docs/getting-starte
 ### Important Resources for State Preservation (Room DB)
 -   [Ink API: State Preservation](https://developer.android.com/develop/ui/compose/touch-input/stylus-input/ink-api-state-preservation)
 -   [Official Sample: Cahier on GitHub](https://github.com/android/cahier)
+-   [Issue Tracker](https://issuetracker.google.com/issues/468458741)
 -   [Cahier: OfflineNotesRepository.kt](https://github.com/android/cahier/blob/main/app/src/main/java/com/example/cahier/data/OfflineNotesRepository.kt)
 -   [Cahier: Converters.kt](https://github.com/android/cahier/blob/main/app/src/main/java/com/example/cahier/ui/Converters.kt)
 -   [Ink Storage Package Summary](https://developer.android.com/reference/kotlin/androidx/ink/storage/package-summary)
