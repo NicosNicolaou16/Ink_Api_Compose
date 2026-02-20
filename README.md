@@ -80,6 +80,8 @@ This project is built with **[Kotlin](https://kotlinlang.org/docs/getting-starte
 
 I began this project to test the new Google Ink API. While I was working on it, my son saw it and asked if he could draw. I told him to wait, then quickly implemented a simple version with options to select colors and erase the drawing. After generating the APKs (my daughter also saw it), I installed the app on their tablet, and they started drawing right away.
 
+## ⭐ Stargazers
+
 If you enjoy this project, please give it a star!
 Check out all the stargazers
 here: [Stargazers on GitHub](https://github.com/NicosNicolaou16/Ink_Api_Compose/stargazers)
