@@ -76,6 +76,7 @@ fun DrawingSurface(
     drawingViewModel: DrawingViewModel = hiltViewModel(),
 ) {
     val state = drawingViewModel.state
+    val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
     val selectedColor = remember { mutableIntStateOf(Color.Red.toArgb()) }
     val canvasStrokeRenderer = CanvasStrokeRenderer.create()
@@ -146,33 +147,43 @@ fun DrawingSurface(
         }
 
         BottomView(
-            state = state,
-            drawingViewModel = drawingViewModel,
             isEraseMode = isEraseModeEnable,
             selectedColor = selectedColor,
-            canvasStrokeRenderer,
             onDrawingEnable = {
                 isEraseModeEnable = false
             },
             onPartiallyEraseEnable = {
                 isEraseModeEnable = true
             },
+            onEraseDrawer = {
+                drawingViewModel.eraseWholeStrokes(
+                    finishedStrokesState = state.finishedStrokesState
+                )
+            },
+            onCreateBitmap = {
+                scope.launch {
+                    if (state.finishedStrokesState.value.isNotEmpty()) {
+                        drawingViewModel.recordCanvasToBitmap(
+                            strokes = state.finishedStrokesState.value.toList(),
+                            canvasStrokeRenderer = canvasStrokeRenderer,
+                            canvasTransform = Matrix(),
+                        )
+                    }
+                }
+            }
         )
     }
 }
 
 @Composable
 private fun BottomView(
-    state: DrawingState,
-    drawingViewModel: DrawingViewModel,
     isEraseMode: Boolean,
     selectedColor: MutableIntState,
-    canvasStrokeRenderer: CanvasStrokeRenderer,
     onDrawingEnable: () -> Unit,
     onPartiallyEraseEnable: () -> Unit,
+    onEraseDrawer: () -> Unit,
+    onCreateBitmap: () -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
-
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -197,23 +208,13 @@ private fun BottomView(
                 Row {
                     EraseDrawerButton(
                         eraseDrawer = {
-                            drawingViewModel.eraseWholeStrokes(
-                                finishedStrokesState = state.finishedStrokesState
-                            )
+                            onEraseDrawer()
                         }
                     )
                     Spacer(modifier = Modifier.padding(end = 5.dp))
                     CreateBitmapFromStrokeButton(
                         bitmap = {
-                            scope.launch {
-                                if (state.finishedStrokesState.value.isNotEmpty()) {
-                                    drawingViewModel.recordCanvasToBitmap(
-                                        strokes = state.finishedStrokesState.value.toList(),
-                                        canvasStrokeRenderer = canvasStrokeRenderer,
-                                        canvasTransform = Matrix(),
-                                    )
-                                }
-                            }
+                            onCreateBitmap()
                         })
                 }
             }
@@ -272,7 +273,6 @@ private fun EraserPartiallyButton(
         )
     }
 }
-
 
 @Composable
 fun ShowBitmapDialog(
