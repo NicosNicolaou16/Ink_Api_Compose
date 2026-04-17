@@ -51,7 +51,7 @@ I began this project to test the new Google Ink API. While I was working on it, 
 
 -   **Target SDK:** **36**
 -   **Minimum SDK:** **29**
--   **Ink API Version:** **1.0.0**
+-   **Ink API Version:** **1.1.0-alpha01**
 -   **Kotlin Version:** **2.3.10**
 -   **Gradle Version:** **9.0.1**
 
