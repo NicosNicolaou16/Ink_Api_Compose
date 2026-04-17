@@ -274,7 +274,6 @@ private fun EraserPartiallyButton(
     }
 }
 
-
 @Composable
 fun ShowBitmapDialog(
     bitmap: Bitmap?,
