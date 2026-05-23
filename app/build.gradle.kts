@@ -10,13 +10,13 @@ plugins {
 
 android {
     namespace = "com.nicos.ink_api_compose"
-    buildToolsVersion = "36.0.0"
-    compileSdk = 36
+    buildToolsVersion = "37.0.0"
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.nicos.ink_api_compose"
         minSdk = 29
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
