@@ -49,11 +49,11 @@ I began this project to test the new Google Ink API. While I was working on it, 
 
 ## 🔧 Versioning
 
--   **Target SDK:** **36**
+-   **Target SDK:** **37**
 -   **Minimum SDK:** **29**
--   **Ink API Version:** **1.1.0-alpha01**
--   **Kotlin Version:** **2.3.20**
--   **Gradle Version:** **9.1.1**
+-   **Ink API Version:** **1.1.0-alpha03**
+-   **Kotlin Version:** **2.3.21**
+-   **Gradle Version:** **9.2.1**
 
 ## 📚 References & Useful Links
 
