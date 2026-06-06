@@ -100,6 +100,7 @@ fun DrawingSurface(
 
     LaunchedEffect(key1 = state.finishedStrokesState) {
         if(state.finishedStrokesState.isNotEmpty()) {
+            strokes.clear()
             strokes.addAll(state.finishedStrokesState)
         }
     }
@@ -172,9 +173,9 @@ fun DrawingSurface(
             },
             onCreateBitmap = {
                 scope.launch {
-                    if (state.finishedStrokesState.isNotEmpty()) {
+                    if (strokes.isNotEmpty()) {
                         drawingViewModel.recordCanvasToBitmap(
-                            strokes = state.finishedStrokesState.toList(),
+                            strokes = strokes.toList(),
                             canvasStrokeRenderer = canvasStrokeRenderer,
                             canvasTransform = Matrix(),
                         )

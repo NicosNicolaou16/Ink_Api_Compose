@@ -115,13 +115,13 @@ class DrawingViewModel @Inject constructor(
      * @param x: Float x coordinate of the point to erase
      * @param y: Float y coordinate of the point to erase
      * */
-    fun erase(x: Float, y: Float) {
+    fun erase(x: Float, y: Float) = viewModelScope.launch(Dispatchers.IO) {
         val strokesBeforeErase = state.finishedStrokesState
         val strokesAfterErase = eraseIntersectingStrokes(
             x, y, strokesBeforeErase
         )
-        if (strokesAfterErase.size != strokesBeforeErase.size) {
-            Snapshot.withMutableSnapshot {
+        withContext(Dispatchers.Main) {
+            if (strokesAfterErase.size != strokesBeforeErase.size) {
                 state = state.copy(finishedStrokesState = strokesAfterErase)
             }
         }
