@@ -79,7 +79,7 @@ fun DrawingSurface(
     val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
     val selectedColor = remember { mutableIntStateOf(Color.Red.toArgb()) }
-    val canvasStrokeRenderer = CanvasStrokeRenderer.create()
+    val canvasStrokeRenderer = remember { CanvasStrokeRenderer.create() }
     var isEraseModeEnable by remember { mutableStateOf(false) }
     val defaultBrush = Brush.createWithColorIntArgb(
         family = StockBrushes.pressurePen(),
