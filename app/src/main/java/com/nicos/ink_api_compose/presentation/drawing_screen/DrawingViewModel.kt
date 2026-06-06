@@ -165,23 +165,21 @@ class DrawingViewModel @Inject constructor(
 
     /**
      * Erases all strokes that intersect with the eraserBox.
-     * @param finishedStrokesState: MutableState<Set<Stroke>> to erase from
      * */
-    fun eraseWholeStrokes(
-        finishedStrokesState: Set<Stroke>,
-    ) {
+    fun eraseWholeStrokes() = viewModelScope.launch(Dispatchers.IO) {
         val threshold = 0.1f
 
-        val strokesToErase = finishedStrokesState.filter { stroke ->
+        val strokesToErase = state.finishedStrokesState.filter { stroke ->
             stroke.shape.computeCoverageIsGreaterThan(
                 box = eraserBox,
                 coverageThreshold = threshold,
             )
         }
-        if (strokesToErase.isNotEmpty()) {
-            Snapshot.withMutableSnapshot {
-                //state.finishedStrokesState -= strokesToErase
-                state = state.copy(finishedStrokesState = strokesToErase.toSet())
+        withContext(Dispatchers.Main) {
+            if (strokesToErase.isNotEmpty()) {
+                state = state.copy(
+                    finishedStrokesState = state.finishedStrokesState.minus(strokesToErase.toSet())
+                )
             }
         }
     }

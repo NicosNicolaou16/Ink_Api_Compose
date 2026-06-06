@@ -99,7 +99,7 @@ fun DrawingSurface(
     )
 
     LaunchedEffect(key1 = state.finishedStrokesState) {
-        if(state.finishedStrokesState.isNotEmpty()) {
+        if (state.finishedStrokesState.isNotEmpty()) {
             strokes.clear()
             strokes.addAll(state.finishedStrokesState)
         }
@@ -170,9 +170,7 @@ fun DrawingSurface(
                 isEraseModeEnable = true
             },
             onEraseDrawer = {
-                drawingViewModel.eraseWholeStrokes(
-                    finishedStrokesState = state.finishedStrokesState
-                )
+                drawingViewModel.eraseWholeStrokes()
             },
             onCreateBitmap = {
                 scope.launch {
