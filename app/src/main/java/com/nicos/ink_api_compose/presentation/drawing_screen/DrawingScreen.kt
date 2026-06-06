@@ -99,10 +99,8 @@ fun DrawingSurface(
     )
 
     LaunchedEffect(key1 = state.finishedStrokesState) {
-        if (state.finishedStrokesState.isNotEmpty()) {
-            strokes.clear()
-            strokes.addAll(state.finishedStrokesState)
-        }
+        strokes.clear()
+        strokes.addAll(state.finishedStrokesState)
     }
 
     showDialog = state.bitmap != null
