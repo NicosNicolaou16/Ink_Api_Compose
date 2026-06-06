@@ -195,7 +195,6 @@ class DrawingViewModel @Inject constructor(
 
     /**
      * Records a canvas to a bitmap.
-     * @param strokes: List of strokes to render
      * @param canvasStrokeRenderer: CanvasStrokeRenderer to use for rendering
      * @param canvasTransform: Optional transform to apply to the canvas
      * */
