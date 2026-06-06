@@ -59,6 +59,7 @@ class DrawingViewModel @Inject constructor(
      * */
     private fun loadDrawing() {
         viewModelScope.launch(Dispatchers.Main) {
+            var strokes: Set<Stroke> = emptySet()
             viewModelScope.async(
                 Dispatchers.IO
             ) {
@@ -67,11 +68,11 @@ class DrawingViewModel @Inject constructor(
                 val strokesAndSelectedLastBrushesDeserialize =
                     strokeConverters.deserializeEntityToStroke(strokeEntity)
                 // Add the stroke to the finishedStrokesState
-                state.finishedStrokesState.value = strokesAndSelectedLastBrushesDeserialize.strokes
+                strokes = strokesAndSelectedLastBrushesDeserialize.strokes
 
             }.await()
             state = state.copy(
-                finishedStrokesState = state.finishedStrokesState
+                finishedStrokesState = strokes
             )
         }
     }
@@ -81,10 +82,10 @@ class DrawingViewModel @Inject constructor(
      * */
     fun saveDrawing() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (state.finishedStrokesState.value.isEmpty()) return@launch
+            if (state.finishedStrokesState.isEmpty()) return@launch
             // Convert the stroke to a strokeEntity
             val strokeEntity =
-                strokeConverters.serializeStrokeToEntity(state.finishedStrokesState.value)
+                strokeConverters.serializeStrokeToEntity(state.finishedStrokesState)
             // Update the stroke in the database
             strokeRepository.insertStroke(
                 strokeEntity.copy(
@@ -115,13 +116,13 @@ class DrawingViewModel @Inject constructor(
      * @param y: Float y coordinate of the point to erase
      * */
     fun erase(x: Float, y: Float) {
-        val strokesBeforeErase = state.finishedStrokesState.value
+        val strokesBeforeErase = state.finishedStrokesState
         val strokesAfterErase = eraseIntersectingStrokes(
             x, y, strokesBeforeErase
         )
         if (strokesAfterErase.size != strokesBeforeErase.size) {
             Snapshot.withMutableSnapshot {
-                state.finishedStrokesState.value = strokesAfterErase
+                state = state.copy(finishedStrokesState = strokesAfterErase)
             }
         }
     }
@@ -163,11 +164,11 @@ class DrawingViewModel @Inject constructor(
      * @param finishedStrokesState: MutableState<Set<Stroke>> to erase from
      * */
     fun eraseWholeStrokes(
-        finishedStrokesState: MutableState<Set<Stroke>>,
+        finishedStrokesState: Set<Stroke>,
     ) {
         val threshold = 0.1f
 
-        val strokesToErase = finishedStrokesState.value.filter { stroke ->
+        val strokesToErase = finishedStrokesState.filter { stroke ->
             stroke.shape.computeCoverageIsGreaterThan(
                 box = eraserBox,
                 coverageThreshold = threshold,
@@ -175,8 +176,8 @@ class DrawingViewModel @Inject constructor(
         }
         if (strokesToErase.isNotEmpty()) {
             Snapshot.withMutableSnapshot {
-                state.finishedStrokesState.value -= strokesToErase
-                state = state.copy(finishedStrokesState = state.finishedStrokesState)
+                /*state.finishedStrokesState -= strokesToErase
+                state = state.copy(finishedStrokesState = state.finishedStrokesState)*/
             }
         }
     }

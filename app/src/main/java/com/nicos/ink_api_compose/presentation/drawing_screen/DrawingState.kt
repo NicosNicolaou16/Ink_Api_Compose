@@ -6,6 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.ink.strokes.Stroke
 
 data class DrawingState(
-    val finishedStrokesState: MutableState<Set<Stroke>> = mutableStateOf(emptySet<Stroke>()),
+    val finishedStrokesState: Set<Stroke> = emptySet<Stroke>(),
     var bitmap: Bitmap? = null,
 )
