@@ -98,6 +98,7 @@ fun DrawingSurface(
         }
     )
 
+    // Update the strokes state when the finishedStrokesState changes
     LaunchedEffect(key1 = state.finishedStrokesState) {
         strokes.clear()
         strokes.addAll(state.finishedStrokesState)
