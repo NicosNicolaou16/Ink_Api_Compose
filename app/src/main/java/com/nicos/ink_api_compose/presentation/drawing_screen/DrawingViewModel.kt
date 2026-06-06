@@ -95,6 +95,10 @@ class DrawingViewModel @Inject constructor(
         }
     }
 
+    fun updateFinishedStrokesState(newStrokes: Set<Stroke>) {
+        state = state.copy(finishedStrokesState = state.finishedStrokesState.plus(newStrokes))
+    }
+
     /**
      * Starts erasing the previous point.
      * */
@@ -176,8 +180,8 @@ class DrawingViewModel @Inject constructor(
         }
         if (strokesToErase.isNotEmpty()) {
             Snapshot.withMutableSnapshot {
-                /*state.finishedStrokesState -= strokesToErase
-                state = state.copy(finishedStrokesState = state.finishedStrokesState)*/
+                //state.finishedStrokesState -= strokesToErase
+                state = state.copy(finishedStrokesState = strokesToErase.toSet())
             }
         }
     }
@@ -198,7 +202,6 @@ class DrawingViewModel @Inject constructor(
      * @param canvasTransform: Optional transform to apply to the canvas
      * */
     suspend fun recordCanvasToBitmap(
-        strokes: List<Stroke>,
         canvasStrokeRenderer: CanvasStrokeRenderer,
         canvasTransform: Matrix? = null, // Optional transform
     ) = withContext(Dispatchers.Default) {
@@ -214,7 +217,7 @@ class DrawingViewModel @Inject constructor(
         }
 
         // Render each stroke into the recording canvas
-        strokes.forEach { stroke ->
+        state.finishedStrokesState.forEach { stroke ->
             canvasStrokeRenderer.draw(
                 stroke = stroke,
                 canvas = canvas,

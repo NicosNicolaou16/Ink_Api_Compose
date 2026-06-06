@@ -134,7 +134,10 @@ fun DrawingSurface(
                     nextBrush = {
                         defaultBrush.copyWithColorIntArgb(colorIntArgb = selectedColor.intValue)
                     },
-                    onStrokesFinished = { newStrokes -> strokes.addAll(newStrokes) }
+                    onStrokesFinished = { newStrokes ->
+                        strokes.addAll(newStrokes)
+                        drawingViewModel.updateFinishedStrokesState(newStrokes = newStrokes.toSet())
+                    }
                 )
 
             Canvas(
@@ -173,9 +176,8 @@ fun DrawingSurface(
             },
             onCreateBitmap = {
                 scope.launch {
-                    if (strokes.isNotEmpty()) {
+                    if (state.finishedStrokesState.isNotEmpty()) {
                         drawingViewModel.recordCanvasToBitmap(
-                            strokes = strokes.toList(),
                             canvasStrokeRenderer = canvasStrokeRenderer,
                             canvasTransform = Matrix(),
                         )
