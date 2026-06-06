@@ -4,11 +4,10 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.Picture
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.Snapshot
 import androidx.ink.geometry.AffineTransform
 import androidx.ink.geometry.ImmutableBox
 import androidx.ink.geometry.Intersection.intersects
@@ -28,8 +27,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.collections.minus
 
+@Stable
 @HiltViewModel
 class DrawingViewModel @Inject constructor(
     private val strokeRepository: StrokeRepository,
@@ -57,6 +56,7 @@ class DrawingViewModel @Inject constructor(
      * */
     private fun loadDrawing() {
         viewModelScope.launch(Dispatchers.Main) {
+            var strokes: Set<Stroke> = emptySet()
             viewModelScope.async(
                 Dispatchers.IO
             ) {
@@ -65,11 +65,11 @@ class DrawingViewModel @Inject constructor(
                 val strokesAndSelectedLastBrushesDeserialize =
                     strokeConverters.deserializeEntityToStroke(strokeEntity)
                 // Add the stroke to the finishedStrokesState
-                state.finishedStrokesState.value = strokesAndSelectedLastBrushesDeserialize.strokes
+                strokes = strokesAndSelectedLastBrushesDeserialize.strokes
 
             }.await()
             state = state.copy(
-                finishedStrokesState = state.finishedStrokesState
+                finishedStrokesState = strokes
             )
         }
     }
@@ -79,10 +79,10 @@ class DrawingViewModel @Inject constructor(
      * */
     fun saveDrawing() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (state.finishedStrokesState.value.isEmpty()) return@launch
+            if (state.finishedStrokesState.isEmpty()) return@launch
             // Convert the stroke to a strokeEntity
             val strokeEntity =
-                strokeConverters.serializeStrokeToEntity(state.finishedStrokesState.value)
+                strokeConverters.serializeStrokeToEntity(state.finishedStrokesState)
             // Update the stroke in the database
             strokeRepository.insertStroke(
                 strokeEntity.copy(
@@ -90,6 +90,10 @@ class DrawingViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    fun updateFinishedStrokesState(newStrokes: Set<Stroke>) {
+        state = state.copy(finishedStrokesState = state.finishedStrokesState.plus(newStrokes))
     }
 
     /**
@@ -112,14 +116,14 @@ class DrawingViewModel @Inject constructor(
      * @param x: Float x coordinate of the point to erase
      * @param y: Float y coordinate of the point to erase
      * */
-    fun erase(x: Float, y: Float) {
-        val strokesBeforeErase = state.finishedStrokesState.value
+    fun erase(x: Float, y: Float) = viewModelScope.launch(Dispatchers.IO) {
+        val strokesBeforeErase = state.finishedStrokesState
         val strokesAfterErase = eraseIntersectingStrokes(
             x, y, strokesBeforeErase
         )
-        if (strokesAfterErase.size != strokesBeforeErase.size) {
-            Snapshot.withMutableSnapshot {
-                state.finishedStrokesState.value = strokesAfterErase
+        withContext(Dispatchers.Main) {
+            if (strokesAfterErase.size != strokesBeforeErase.size) {
+                state = state.copy(finishedStrokesState = strokesAfterErase)
             }
         }
     }
@@ -158,23 +162,21 @@ class DrawingViewModel @Inject constructor(
 
     /**
      * Erases all strokes that intersect with the eraserBox.
-     * @param finishedStrokesState: MutableState<Set<Stroke>> to erase from
      * */
-    fun eraseWholeStrokes(
-        finishedStrokesState: MutableState<Set<Stroke>>,
-    ) {
+    fun eraseWholeStrokes() = viewModelScope.launch(Dispatchers.IO) {
         val threshold = 0.1f
 
-        val strokesToErase = finishedStrokesState.value.filter { stroke ->
+        val strokesToErase = state.finishedStrokesState.filter { stroke ->
             stroke.shape.computeCoverageIsGreaterThan(
                 box = eraserBox,
                 coverageThreshold = threshold,
             )
         }
-        if (strokesToErase.isNotEmpty()) {
-            Snapshot.withMutableSnapshot {
-                state.finishedStrokesState.value -= strokesToErase
-                state = state.copy(finishedStrokesState = state.finishedStrokesState)
+        withContext(Dispatchers.Main) {
+            if (strokesToErase.isNotEmpty()) {
+                state = state.copy(
+                    finishedStrokesState = state.finishedStrokesState.minus(strokesToErase.toSet())
+                )
             }
         }
     }
@@ -190,12 +192,10 @@ class DrawingViewModel @Inject constructor(
 
     /**
      * Records a canvas to a bitmap.
-     * @param strokes: List of strokes to render
      * @param canvasStrokeRenderer: CanvasStrokeRenderer to use for rendering
      * @param canvasTransform: Optional transform to apply to the canvas
      * */
     suspend fun recordCanvasToBitmap(
-        strokes: List<Stroke>,
         canvasStrokeRenderer: CanvasStrokeRenderer,
         canvasTransform: Matrix? = null, // Optional transform
     ) = withContext(Dispatchers.Default) {
@@ -211,7 +211,7 @@ class DrawingViewModel @Inject constructor(
         }
 
         // Render each stroke into the recording canvas
-        strokes.forEach { stroke ->
+        state.finishedStrokesState.forEach { stroke ->
             canvasStrokeRenderer.draw(
                 stroke = stroke,
                 canvas = canvas,

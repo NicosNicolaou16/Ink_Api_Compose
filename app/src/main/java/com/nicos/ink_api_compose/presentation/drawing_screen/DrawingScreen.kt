@@ -26,9 +26,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,6 +52,7 @@ import androidx.ink.brush.StockBrushes
 import androidx.ink.brush.color.Color
 import androidx.ink.brush.color.toArgb
 import androidx.ink.rendering.android.canvas.CanvasStrokeRenderer
+import androidx.ink.strokes.Stroke
 import com.nicos.ink_api_compose.R
 import com.nicos.ink_api_compose.ui.theme.Blue
 import com.nicos.ink_api_compose.ui.theme.Green
@@ -79,7 +82,7 @@ fun DrawingSurface(
     val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
     val selectedColor = remember { mutableIntStateOf(Color.Red.toArgb()) }
-    val canvasStrokeRenderer = CanvasStrokeRenderer.create()
+    val canvasStrokeRenderer = remember { CanvasStrokeRenderer.create() }
     var isEraseModeEnable by remember { mutableStateOf(false) }
     val defaultBrush = Brush.createWithColorIntArgb(
         family = StockBrushes.pressurePen(),
@@ -87,12 +90,19 @@ fun DrawingSurface(
         size = 15F,
         epsilon = 0.1F
     )
+    val strokes = remember { mutableStateListOf<Stroke>() }
 
     MyLifecycle(
         onStop = {
             drawingViewModel.saveDrawing()
         }
     )
+
+    // Update the strokes state when the finishedStrokesState changes
+    LaunchedEffect(key1 = state.finishedStrokesState) {
+        strokes.clear()
+        strokes.addAll(state.finishedStrokesState)
+    }
 
     showDialog = state.bitmap != null
     ShowBitmapDialog(
@@ -123,7 +133,10 @@ fun DrawingSurface(
                     nextBrush = {
                         defaultBrush.copyWithColorIntArgb(colorIntArgb = selectedColor.intValue)
                     },
-                    onStrokesFinished = { strokes -> state.finishedStrokesState.value += strokes }
+                    onStrokesFinished = { newStrokes ->
+                        strokes.addAll(newStrokes)
+                        drawingViewModel.updateFinishedStrokesState(newStrokes = newStrokes.toSet())
+                    }
                 )
 
             Canvas(
@@ -136,7 +149,7 @@ fun DrawingSurface(
                 drawContext.canvas.nativeCanvas.concat(canvasTransform)
                 val canvas = drawContext.canvas.nativeCanvas
 
-                state.finishedStrokesState.value.forEach { stroke ->
+                strokes.forEach { stroke ->
                     canvasStrokeRenderer.draw(
                         stroke = stroke,
                         canvas = canvas,
@@ -156,15 +169,12 @@ fun DrawingSurface(
                 isEraseModeEnable = true
             },
             onEraseDrawer = {
-                drawingViewModel.eraseWholeStrokes(
-                    finishedStrokesState = state.finishedStrokesState
-                )
+                drawingViewModel.eraseWholeStrokes()
             },
             onCreateBitmap = {
                 scope.launch {
-                    if (state.finishedStrokesState.value.isNotEmpty()) {
+                    if (state.finishedStrokesState.isNotEmpty()) {
                         drawingViewModel.recordCanvasToBitmap(
-                            strokes = state.finishedStrokesState.value.toList(),
                             canvasStrokeRenderer = canvasStrokeRenderer,
                             canvasTransform = Matrix(),
                         )
