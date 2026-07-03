@@ -1,10 +1,9 @@
 package com.nicos.ink_api_compose.data.database
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room3.Database
+import androidx.room3.Room
+import androidx.room3.RoomDatabase
 import com.nicos.ink_api_compose.data.database.dao.StrokeDao
 import com.nicos.ink_api_compose.data.database.entities.StrokeEntity
 import javax.inject.Inject
@@ -14,7 +13,6 @@ import javax.inject.Inject
     version = 1,
     exportSchema = false
 )
-@TypeConverters
 abstract class MyRoomDatabase : RoomDatabase() {
     abstract fun strokeDao(): StrokeDao
 
@@ -36,7 +34,7 @@ abstract class MyRoomDatabase : RoomDatabase() {
         }
     }
 
-    fun deleteAll() {
+    suspend fun deleteAll() {
         myDatabase.clearAllTables()
     }
 }
