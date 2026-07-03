@@ -21,3 +21,5 @@
 -renamesourcefileattribute SourceFile
 
 -dontwarn javax.lang.model.element.Modifier
+
+-keep class * extends androidx.room3.RoomDatabase { <init>(); }
