@@ -1,7 +1,7 @@
 package com.nicos.ink_api_compose.data.database.entities
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 import com.nicos.ink_api_compose.data.stroke_converter.SerializedStockBrush
 
 @Entity
