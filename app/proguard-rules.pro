@@ -21,5 +21,6 @@
 -renamesourcefileattribute SourceFile
 
 -dontwarn javax.lang.model.element.Modifier
+-dontwarn com.google.errorprone.annotations.CanIgnoreReturnValue
 
 -keep class * extends androidx.room3.RoomDatabase { <init>(); }
