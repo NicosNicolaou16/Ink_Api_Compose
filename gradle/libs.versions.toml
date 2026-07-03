@@ -12,7 +12,7 @@ inkVersion = "1.1.0-alpha04"
 inputMotionprediction = "1.0.0"
 graphicsCore = "1.0.4"
 kspVersion = "2.3.9"
-roomVersion = "2.8.4"
+roomVersion = "3.0.0"
 hiltVersion = "2.60"
 kotlin-metadata-version = "2.4.0"
 hiltCompilerVersion = "1.4.0"
@@ -47,9 +47,8 @@ androidx-ink-authoring-compose = { group = "androidx.ink", name = "ink-authoring
 # Motion Prediction
 androidx-input-motionprediction = { group = "androidx.input", name = "input-motionprediction", version.ref = "inputMotionprediction" }
 # Room Database
-androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion" }
-androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
-androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVersion" }
+androidx-room-runtime = { group = "androidx.room3", name = "room3-runtime", version.ref = "roomVersion" }
+androidx-room-compiler = { group = "androidx.room3", name = "room3-compiler", version.ref = "roomVersion" }
 # Hilt
 metadata-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-metadata-jvm", version.ref = "kotlin-metadata-version" }
 dagger-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
