@@ -51,6 +51,7 @@ import androidx.ink.brush.Brush
 import androidx.ink.brush.StockBrushes
 import androidx.ink.brush.color.Color
 import androidx.ink.brush.color.toArgb
+import androidx.ink.nativeloader.InkInternalOnlyApi
 import androidx.ink.rendering.android.canvas.CanvasStrokeRenderer
 import androidx.ink.strokes.Stroke
 import com.nicos.ink_api_compose.R
@@ -72,6 +73,7 @@ fun DrawingSurfaceRoot(
     }
 }
 
+@OptIn(InkInternalOnlyApi::class)
 @SuppressLint("ClickableViewAccessibility", "RestrictedApi")
 @Composable
 fun DrawingSurface(
