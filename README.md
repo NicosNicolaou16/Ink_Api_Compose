@@ -29,7 +29,7 @@ This open-source project tests the new Google Ink API with a drawing example. It
 <p align="left">
   <img src="examples/Screenshot_20251226_001307.png" alt="Drawing Screen" height="500" width="200">
   <img src="examples/Screenshot_20251226_001257.png" alt="Color Selection" height="500" width="200">
-  <img src="examples/example_gif3.gif" alt="Drawing and Erasing Demo" height="500" width="200">
+  <img src="examples/example_gif4.gif" alt="Drawing and Erasing Demo" height="500" width="200">
 </p>
 
 ## 🛠️ Tech Stack & Libraries
