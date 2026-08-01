@@ -27,9 +27,9 @@ This open-source project tests the new Google Ink API with a drawing example. It
 ## 📸 Screenshots & Demos
 
 <p align="left">
-  <img src="examples/Screenshot_20251226_001307.png" alt="Drawing Screen" height="500" width="200">
-  <img src="examples/Screenshot_20251226_001257.png" alt="Color Selection" height="500" width="200">
-  <img src="examples/example_gif3.gif" alt="Drawing and Erasing Demo" height="500" width="200">
+  <img src="examples/Screenshot_20260802_014543.png" alt="Drawing Screen" height="500" width="200">
+  <img src="examples/Screenshot_20260802_014026.png" alt="Color Selection" height="500" width="200">
+  <img src="examples/example_gif4.gif" alt="Drawing and Erasing Demo" height="500" width="200">
 </p>
 
 ## 🛠️ Tech Stack & Libraries
@@ -51,9 +51,9 @@ I began this project to test the new Google Ink API. While I was working on it, 
 
 -   **Target SDK:** **37**
 -   **Minimum SDK:** **29**
--   **Ink API Version:** **1.1.0-alpha05**
+-   **Ink API Version:** **1.1.0-alpha06**
 -   **Kotlin Version:** **2.4.10**
--   **Gradle Version:** **9.3.0**
+-   **Gradle Version:** **9.3.1**
 
 ## 📚 References & Useful Links
 

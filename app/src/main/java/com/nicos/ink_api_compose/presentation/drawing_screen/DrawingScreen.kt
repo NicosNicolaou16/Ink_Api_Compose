@@ -3,27 +3,35 @@ package com.nicos.ink_api_compose.presentation.drawing_screen
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +45,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
@@ -66,9 +75,9 @@ import kotlinx.coroutines.launch
 fun DrawingSurfaceRoot(
     innerPadding: PaddingValues,
 ) {
-    Scaffold { panding ->
+    Scaffold { padding ->
         DrawingSurface(
-            innerPadding = innerPadding,
+            innerPadding = padding,
         )
     }
 }
@@ -100,7 +109,6 @@ fun DrawingSurface(
         }
     )
 
-    // Update the strokes state when the finishedStrokesState changes
     LaunchedEffect(key1 = state.finishedStrokesState) {
         strokes.clear()
         strokes.addAll(state.finishedStrokesState)
@@ -112,9 +120,16 @@ fun DrawingSurface(
         showDialog = showDialog,
         onDismissRequest = {
             drawingViewModel.setBitmapAsNull()
-        })
+        }
+    )
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        // Drawing Area
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -129,7 +144,7 @@ fun DrawingSurface(
                     }
                 }
         ) {
-            if (!isEraseModeEnable)
+            if (!isEraseModeEnable) {
                 InProgressStrokes(
                     defaultBrush = defaultBrush,
                     nextBrush = {
@@ -140,6 +155,7 @@ fun DrawingSurface(
                         drawingViewModel.updateFinishedStrokesState(newStrokes = newStrokes.toSet())
                     }
                 )
+            }
 
             Canvas(
                 modifier = Modifier
@@ -161,18 +177,13 @@ fun DrawingSurface(
             }
         }
 
+        // Modern Bottom Tool Palette
         BottomView(
             isEraseMode = isEraseModeEnable,
             selectedColor = selectedColor,
-            onDrawingEnable = {
-                isEraseModeEnable = false
-            },
-            onPartiallyEraseEnable = {
-                isEraseModeEnable = true
-            },
-            onEraseDrawer = {
-                drawingViewModel.eraseWholeStrokes()
-            },
+            onDrawingEnable = { isEraseModeEnable = false },
+            onPartiallyEraseEnable = { isEraseModeEnable = true },
+            onEraseDrawer = { drawingViewModel.eraseWholeStrokes() },
             onCreateBitmap = {
                 scope.launch {
                     if (state.finishedStrokesState.isNotEmpty()) {
@@ -196,92 +207,110 @@ private fun BottomView(
     onEraseDrawer: () -> Unit,
     onCreateBitmap: () -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Row(
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shadowElevation = 8.dp
+    ) {
+        Column(
             modifier = Modifier
-                .height(height = 200.dp)
-                .align(Alignment.CenterHorizontally)
+                .padding(horizontal = 24.dp, vertical = 16.dp)
                 .safeDrawingPadding(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Column {
-                Row {
-                    DrawingButton(
-                        isEraseMode = isEraseMode,
+            // Top Row: Toolbar Actions
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Drawing / Erasing Toggle Group
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ToolIconButton(
+                        iconRes = R.drawable.outline_draw_24,
+                        contentDescription = "Draw",
+                        isActive = !isEraseMode,
                         onClick = onDrawingEnable
                     )
-                    Spacer(modifier = Modifier.padding(end = 5.dp))
-                    EraserPartiallyButton(
-                        isEraseMode = isEraseMode,
+                    ToolIconButton(
+                        iconRes = R.drawable.outline_delete_24,
+                        contentDescription = "Eraser",
+                        isActive = isEraseMode,
                         onClick = onPartiallyEraseEnable
                     )
                 }
-                Row {
-                    EraseDrawerButton(
-                        eraseDrawer = {
-                            onEraseDrawer()
-                        }
+
+                // Global Actions Group
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ToolIconButton(
+                        iconRes = R.drawable.baseline_delete_forever_24,
+                        contentDescription = "Clear All",
+                        isActive = false,
+                        onClick = onEraseDrawer,
+                        isDestructive = true
                     )
-                    Spacer(modifier = Modifier.padding(end = 5.dp))
-                    CreateBitmapFromStrokeButton(
-                        bitmap = {
-                            onCreateBitmap()
-                        })
+                    ToolIconButton(
+                        iconRes = R.drawable.baseline_image_24,
+                        contentDescription = "Create Bitmap",
+                        isActive = false,
+                        onClick = onCreateBitmap
+                    )
                 }
             }
-            SelectedColor(
-                selectedColor = selectedColor,
-                color = Red
+
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
             )
-            SelectedColor(
-                selectedColor = selectedColor,
-                color = Blue
-            )
-            SelectedColor(
-                selectedColor = selectedColor,
-                color = Pink
-            )
-            SelectedColor(
-                selectedColor = selectedColor,
-                color = Green
-            )
+
+            // Bottom Row: Color Selection Palette
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.Bottom // Anchors the pencils to the bottom so they grow up
+            ) {
+                SelectedColor(selectedColor = selectedColor, color = Red)
+                SelectedColor(selectedColor = selectedColor, color = Blue)
+                SelectedColor(selectedColor = selectedColor, color = Pink)
+                SelectedColor(selectedColor = selectedColor, color = Green)
+            }
         }
     }
 }
 
 @Composable
-private fun DrawingButton(
-    isEraseMode: Boolean,
+private fun ToolIconButton(
+    iconRes: Int,
+    contentDescription: String,
+    isActive: Boolean,
     onClick: () -> Unit,
+    isDestructive: Boolean = false
 ) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (!isEraseMode) androidx.compose.ui.graphics.Color.Unspecified else androidx.compose.ui.graphics.Color.Gray
-        )
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.outline_draw_24),
-            contentDescription = "Toggle Eraser",
-        )
+    val backgroundColor = if (isActive) MaterialTheme.colorScheme.primaryContainer else androidx.compose.ui.graphics.Color.Transparent
+    val iconTint = when {
+        isActive -> MaterialTheme.colorScheme.onPrimaryContainer
+        isDestructive -> MaterialTheme.colorScheme.error
+        else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
-}
 
-@Composable
-private fun EraserPartiallyButton(
-    isEraseMode: Boolean,
-    onClick: () -> Unit,
-) {
-    Button(
+    IconButton(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isEraseMode) androidx.compose.ui.graphics.Color.Unspecified else androidx.compose.ui.graphics.Color.Gray
-        )
+        modifier = Modifier
+            .background(color = backgroundColor, shape = CircleShape)
+            .clip(CircleShape)
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.outline_delete_24),
-            contentDescription = "Toggle Eraser",
+            painter = painterResource(id = iconRes),
+            contentDescription = contentDescription,
+            tint = iconTint
         )
     }
 }
@@ -302,7 +331,7 @@ fun ShowBitmapDialog(
                 Image(
                     bitmap = bitmap.asImageBitmap(),
                     contentDescription = "Displayed Bitmap",
-                    modifier = Modifier
+                    modifier = Modifier.clip(RoundedCornerShape(8.dp))
                 )
             },
             confirmButton = {
@@ -314,54 +343,32 @@ fun ShowBitmapDialog(
     }
 }
 
-@Composable
-private fun CreateBitmapFromStrokeButton(bitmap: () -> Unit) {
-    Button(
-        onClick = {
-            bitmap()
-        },
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.baseline_image_24),
-            contentDescription = "image from stroke",
-        )
-    }
-}
-
-@Composable
-private fun EraseDrawerButton(eraseDrawer: () -> Unit) {
-    Button(
-        onClick = {
-            eraseDrawer()
-        },
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.baseline_delete_forever_24),
-            contentDescription = "Delete",
-        )
-    }
-}
-
-
 @SuppressLint("RestrictedApi")
 @Composable
 private fun SelectedColor(
     selectedColor: MutableIntState,
     color: androidx.compose.ui.graphics.Color,
 ) {
+    val isSelected = selectedColor.intValue == color.toArgb()
+
+    // Smoothly animate the height instead of snapping instantly
+    val animatedHeight by animateDpAsState(
+        targetValue = if (isSelected) 100.dp else 65.dp,
+        animationSpec = tween(durationMillis = 300),
+        label = "pencilHeight"
+    )
 
     Image(
         painter = painterResource(id = R.drawable.ic_pencil),
-        contentDescription = "check",
-        colorFilter = ColorFilter.tint(
-            color = color
-        ),
+        contentDescription = "Select Color",
+        colorFilter = ColorFilter.tint(color = color),
         modifier = Modifier
-            .size(
-                height = if (selectedColor.intValue == color.toArgb()) 100.dp else 70.dp,
-                width = 50.dp
-            )
-            .clickable {
+            .size(width = 50.dp, height = animatedHeight)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null // Removes the ripple effect for a cleaner "tool selection" feel
+            ) {
                 selectedColor.intValue = color.toArgb()
-            })
+            }
+    )
 }
