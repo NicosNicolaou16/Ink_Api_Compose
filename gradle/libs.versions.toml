@@ -1,5 +1,5 @@
 [versions]
-agp = "9.4.1"
+agp = "9.5.1"
 kotlin = "2.4.21"
 coreKtx = "1.19.1"
 junit = "4.13.2"
@@ -8,16 +8,16 @@ espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.11.0"
 activityCompose = "1.13.0"
 composeBom = "2026.09.00"
-inkVersion = "1.1.0-alpha10"
-inputMotionprediction = "1.0.0"
+inkVersion = "1.1.0-alpha11"
+inputMotionprediction = "1.0.1"
 graphicsCore = "1.0.4"
-kspVersion = "2.3.11"
+kspVersion = "2.3.13"
 roomVersion = "3.0.3"
 hiltVersion = "2.60.1"
 kotlin-metadata-version = "2.4.21"
 hiltCompilerVersion = "1.4.0"
 composeHiltNavigationVersion = "1.4.0"
-kotlinSerializationVersion = "1.11.0"
+kotlinSerializationVersion = "1.12.0"
 
 [libraries]
 # Architecture
