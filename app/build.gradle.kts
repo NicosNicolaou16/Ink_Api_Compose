@@ -13,6 +13,7 @@ android {
     namespace = "com.nicos.ink_api_compose"
     buildToolsVersion = "37.0.0"
     compileSdk = 37
+    compileSdkMinor = 1
 
     defaultConfig {
         applicationId = "com.nicos.ink_api_compose"
