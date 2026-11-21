@@ -49,7 +49,7 @@ I began this project to test the new Google Ink API. While I was working on it, 
 
 ## 🔧 Versioning
 
--   **Target SDK:** **37**
+-   **Target SDK:** **37.1**
 -   **Minimum SDK:** **29**
 -   **Ink API Version:** **1.1.0-alpha10**
 -   **Kotlin Version:** **2.4.21**
